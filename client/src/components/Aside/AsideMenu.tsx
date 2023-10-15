@@ -6,9 +6,11 @@ import {
   PiTwitterLogo,
   PiLinkedinLogoLight,
 } from "react-icons/pi";
-// import { BsSunFill, BsFillMoonFill } from "react-icons/bs";
-import { BsSunFill } from "react-icons/bs";
+import { BsSunFill, BsFillMoonFill } from "react-icons/bs";
 import AsideItem from "./AsideItem";
+import { useDispatch } from "react-redux";
+import { setTheme } from "../../app/features/Theme";
+import { useAppSelector } from "../../app/hooks";
 
 interface IMenuItems {
   id: number | string;
@@ -57,9 +59,17 @@ const socialMedia: IMenuItems[] = [
 ];
 
 const AsideMenu: React.FC = () => {
+  const { theme } = useAppSelector((state) => state.Theme);
+
+  const dispatch = useDispatch();
+  
+  const changeTheme = (themeType: string) => {
+    localStorage.setItem("theme", themeType);
+    dispatch(setTheme(themeType));
+  };
   return (
     <>
-      <aside className="w-[14rem] bg-[#1e1e1e] absolute top-[85%] left-2 rounded-md py-4 px-2 flex flex-col gap-2 z-20">
+      <aside className="w-[14rem] dark:bg-[#1e1e1e] bg-[#e0dde0d8] absolute top-[85%] left-2 rounded-md py-4 px-2 flex flex-col gap-2 z-20">
         {menuItems.map((item) => {
           return (
             <AsideItem key={item.id}>
@@ -78,9 +88,21 @@ const AsideMenu: React.FC = () => {
           );
         })}
         <div className="h-[1px] bg-[#4a4a4a] my-1" />
-        <button className="text-gray-400 list-none inline-flex items-center justify-start gap-2 font-assistant cursor-pointer hover:bg-[#2b2e31ce] px-2 py-1.5 rounded-lg">
-          <BsSunFill className="text-sm" /> Light mode
-        </button>
+        {theme === "dark" ? (
+          <button
+            className="dark:text-gray-400 list-none inline-flex items-center justify-start gap-2 font-assistant cursor-pointer dark:hover:bg-[#2b2e31ce] hover:bg-[#b4b6b8ce] px-2 py-1.5 rounded-lg"
+            onClick={() => changeTheme("light")}
+          >
+            <BsSunFill className="text-sm" /> Light mode
+          </button>
+        ) : (
+          <button
+            className="dark:text-gray-400 list-none inline-flex items-center justify-start gap-2 font-assistant cursor-pointer dark:hover:bg-[#2b2e31ce] hover:bg-[#b4b6b8ce] px-2 py-1.5 rounded-lg"
+            onClick={() => changeTheme("dark")}
+          >
+            <BsFillMoonFill className="text-sm" /> Dark mode
+          </button>
+        )}
       </aside>
     </>
   );

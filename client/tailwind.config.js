@@ -6,9 +6,6 @@ export default {
   ],
   darkMode : "class",
   theme: {
-    extend: {
-      darkBackground : '#1b1717'
-    },
     fontFamily : {
       'assistant' : ['Assistant', 'sans-serif']
     }
