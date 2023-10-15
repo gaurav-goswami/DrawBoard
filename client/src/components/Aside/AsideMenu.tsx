@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import { BiImageAdd } from "react-icons/bi";
 import { HiUsers, HiOutlineTrash } from "react-icons/hi";
 import {
@@ -6,7 +6,8 @@ import {
   PiTwitterLogo,
   PiLinkedinLogoLight,
 } from "react-icons/pi";
-import { BsSunFill, BsFillMoonFill } from "react-icons/bs";
+// import { BsSunFill, BsFillMoonFill } from "react-icons/bs";
+import { BsSunFill } from "react-icons/bs";
 import AsideItem from "./AsideItem";
 
 interface IMenuItems {
@@ -14,10 +15,6 @@ interface IMenuItems {
   icon: JSX.Element;
   title: string;
   link?: string;
-}
-
-interface IAsideMenuProps {
-  setOpen: (x: boolean) => void;
 }
 
 const menuItems: IMenuItems[] = [
@@ -59,28 +56,10 @@ const socialMedia: IMenuItems[] = [
   },
 ];
 
-const AsideMenu: React.FC<IAsideMenuProps> = ({ setOpen}) => {
-  const asideRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    let closeHandler = (e: any) => {
-      if (!asideRef.current?.contains(e.target)) {
-        setOpen(false);
-        console.log("inside use effect")
-      }
-    };
-    document.addEventListener("mousedown", closeHandler);
-    return () => {
-      document.removeEventListener("mousedown", closeHandler);
-    };
-  } , []);
-
+const AsideMenu: React.FC = () => {
   return (
     <>
-      <aside
-        className="w-[14rem] bg-[#1e1e1e] absolute top-[85%] left-2 rounded-md py-4 px-2 flex flex-col gap-2 z-20"
-        ref={asideRef}
-      >
+      <aside className="w-[14rem] bg-[#1e1e1e] absolute top-[85%] left-2 rounded-md py-4 px-2 flex flex-col gap-2 z-20">
         {menuItems.map((item) => {
           return (
             <AsideItem key={item.id}>

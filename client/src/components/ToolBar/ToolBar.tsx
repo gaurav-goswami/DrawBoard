@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { HiOutlineCloudDownload } from "react-icons/hi";
 import { BiUndo, BiRedo, BiSolidPencil, BiCircle } from "react-icons/bi";
 import { LuEraser } from "react-icons/lu";
@@ -54,13 +54,27 @@ const toolBarOptions: IToolBarOption[] = [
 
 const ToolBar: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
+  const asideRef = useRef<HTMLDivElement>(null);
 
-  console.log("open is", open);
+  useEffect(() => {
+    const handleClose = (e: any) => {
+      if (asideRef.current) {
+        if (!asideRef.current.contains(e.target)) {
+          setOpen(false);
+        }
+      }
+    };
+    document.addEventListener("mousedown", handleClose);
+    return () => {
+      document.removeEventListener("mousedown", handleClose);
+    };
+  }, []);
+
   return (
     <>
       <ToolWrapper>
         <div className="flex items-center px-2">
-          <div className="relative">
+          <div className="relative" ref={asideRef}>
             <button
               className="w-max mx-2 my-4 flex gap-1 bg-[#262627] rounded-md items-center justify-center text-white hover:bg-[#30363a] transition-all duration-100 relative"
               onClick={() => setOpen(!open)}
@@ -71,7 +85,7 @@ const ToolBar: React.FC = () => {
                 <MdClose className="w-full h-full p-2.5" />
               )}
             </button>
-            {open && <AsideMenu setOpen={setOpen} />}
+            {open && <AsideMenu />}
           </div>
           <div className="w-max p-4 mx-auto my-4 flex gap-1 bg-[#262627] rounded-md h-[2.5rem] items-center justify-center">
             {toolBarOptions.map((option) => {
