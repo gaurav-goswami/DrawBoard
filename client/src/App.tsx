@@ -1,9 +1,10 @@
 import React from 'react'
+import ToolBar from './components/ToolBar/ToolBar'
 
 const App : React.FC = () => {
   return (
     <>
-      <h1 className='text-green-400'>DrawBoard</h1>
+      <ToolBar />
     </>
   )
 }
