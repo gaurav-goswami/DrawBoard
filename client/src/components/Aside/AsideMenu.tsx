@@ -69,7 +69,7 @@ const AsideMenu: React.FC = () => {
   };
   return (
     <>
-      <aside className="w-[14rem] dark:bg-[#1e1e1e] bg-[#e0dde0d8] absolute top-[85%] left-2 rounded-md py-4 px-2 flex flex-col gap-2 z-20">
+      <aside className="w-[14rem] dark:bg-[#1e1e1e] bg-white absolute top-[85%] left-2 rounded-lg py-4 px-2 flex flex-col gap-2 z-20">
         {menuItems.map((item) => {
           return (
             <AsideItem key={item.id}>
