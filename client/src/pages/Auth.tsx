@@ -1,13 +1,19 @@
-import React from 'react'
+import React, { useState } from "react";
+import Login from "../components/Form/Login";
+import SignUp from "../components/Form/Signup";
 
-const Auth : React.FC = () => {
+const Auth: React.FC = () => {
+  const [isLoginPage, setIsLoginPage] = useState<boolean>(true);
+
   return (
     <>
-        <div>
-            This is auth page
-        </div>
+      {isLoginPage ? (
+        <Login setPage={setIsLoginPage} />
+      ) : (
+        <SignUp setPage={setIsLoginPage} />
+      )}
     </>
-  )
-}
+  );
+};
 
-export default Auth
+export default Auth;
