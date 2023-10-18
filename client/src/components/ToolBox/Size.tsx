@@ -1,6 +1,6 @@
 import React from "react";
 
-const Opacity: React.FC = () => {
+const Size : React.FC = () => {
   return (
     <>
       <input
@@ -15,4 +15,4 @@ const Opacity: React.FC = () => {
   );
 };
 
-export default Opacity;
+export default Size;

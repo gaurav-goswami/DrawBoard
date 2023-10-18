@@ -3,10 +3,10 @@ import React, { useRef } from "react";
 interface ITooltip {
   children: React.ReactNode;
   title ?: string;
-  style ?: string
+  style ?: string;
 }
 
-const Tooltip: React.FC<ITooltip> = ({ children, title, style }) => {
+const Tooltip: React.FC<ITooltip> = ({ children, title, style}) => {
   const tooltipRef = useRef<HTMLSpanElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 

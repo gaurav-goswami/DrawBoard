@@ -7,11 +7,14 @@ import { MdOutlineMenu, MdClose } from "react-icons/md";
 import Tooltip from "../Tooltip/Tooltip";
 import AsideMenu from "../Aside/AsideMenu";
 import ToolWrapper from "../Wrapper/ToolWrapper";
+import { useDispatch } from "react-redux";
+import { setCurrentToolType } from "../../app/features/Tools";
 
 interface IToolBarOption {
   id: number | string;
   icon: JSX.Element;
   tooltipTitle?: string;
+  dispatch?: boolean | null;
 }
 
 const toolBarOptions: IToolBarOption[] = [
@@ -19,36 +22,43 @@ const toolBarOptions: IToolBarOption[] = [
     id: 1,
     icon: <BiSolidPencil />,
     tooltipTitle: "Pencil",
+    dispatch: true,
   },
   {
     id: 2,
     icon: <RiRectangleLine />,
     tooltipTitle: "Box",
+    dispatch: true,
   },
   {
     id: 3,
     icon: <BiCircle />,
     tooltipTitle: "Circle",
+    dispatch: true,
   },
   {
     id: 4,
     icon: <BiUndo />,
     tooltipTitle: "Undo",
+    dispatch: null,
   },
   {
     id: 5,
     icon: <BiRedo />,
     tooltipTitle: "Redo",
+    dispatch: null,
   },
   {
     id: 6,
     icon: <LuEraser />,
     tooltipTitle: "Eraser",
+    dispatch: false,
   },
   {
     id: 7,
     icon: <HiOutlineCloudDownload />,
     tooltipTitle: "Download",
+    dispatch: null,
   },
 ];
 
@@ -69,6 +79,21 @@ const ToolBar: React.FC = () => {
       document.removeEventListener("mousedown", handleClose);
     };
   }, []);
+
+  const dispatch = useDispatch();
+  const showTools = (dispatchValue: boolean | undefined | null) => {
+    switch (dispatchValue) {
+      case true:
+        dispatch(setCurrentToolType("common"));
+        break;
+      case false:
+        dispatch(setCurrentToolType("brush"));
+        break;
+      default:
+        dispatch(setCurrentToolType(null));
+        break;
+    }
+  };
 
   return (
     <>
@@ -91,7 +116,10 @@ const ToolBar: React.FC = () => {
             {toolBarOptions.map((option) => {
               return (
                 <Tooltip title={option.tooltipTitle} key={option.id}>
-                  <span className="dark:text-white cursor-pointer text-lg transition-all duration-100 p-2 rounded-md dark:hover:bg-[#586168] hover:bg-[#b0baf539] text-gray-700">
+                  <span
+                    className="dark:text-white cursor-pointer text-lg transition-all duration-100 p-2 rounded-md dark:hover:bg-[#586168] hover:bg-[#b0baf539] text-gray-700"
+                    onClick={() => showTools(option.dispatch)}
+                  >
                     {option.icon}
                   </span>
                 </Tooltip>
