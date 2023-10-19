@@ -1,6 +1,6 @@
 import React from "react";
 import CommonTools from "./CommonTools";
-import BrushTool from "./BrushTool";
+import EraserTool from "./EraserTool";
 import { useAppSelector } from "../../app/hooks";
 
 const ToolBox: React.FC = () => {
@@ -14,7 +14,7 @@ const ToolBox: React.FC = () => {
     <>
       <div className="w-[12.5rem] h-max dark:bg-[#1e1e1e] bg-white absolute left-4 p-2 top-2 rounded-lg flex flex-col">
         {
-          currentTool === "common" ? <CommonTools /> : currentTool === "brush" ? <BrushTool /> : null
+          currentTool === "common" ? <CommonTools /> : currentTool === "eraser" ? <EraserTool /> : null
         }
       </div>
     </>

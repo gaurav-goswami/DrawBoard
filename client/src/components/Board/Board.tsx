@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import { useAppSelector } from "../../app/hooks";
 
 interface IDimension {
@@ -36,10 +36,12 @@ const Board: React.FC = () => {
 
   // const {color} = useAppSelector((state) => state.ToolBox);
   // const {opacity} = useAppSelector((state) => state.ToolBox);
-  const {strokeWidth} = useAppSelector((state) => state.ToolBox);
-  console.log("stroke width is" , strokeWidth);
-   // console.log("stroke is" , color);
-  
+  // const {strokeWidth} = useAppSelector((state) => state.ToolBox);
+  const {eraserSize} = useAppSelector((state) => state.ToolBox);
+  console.log("eraser size is" , eraserSize);
+  // console.log("stroke width is" , strokeWidth);
+  // console.log("stroke is" , color);
+
   return (
     <>
       <canvas ref={canvasRef}></canvas>

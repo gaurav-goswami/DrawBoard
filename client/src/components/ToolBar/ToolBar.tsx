@@ -87,7 +87,7 @@ const ToolBar: React.FC = () => {
         dispatch(setCurrentToolType("common"));
         break;
       case false:
-        dispatch(setCurrentToolType("brush"));
+        dispatch(setCurrentToolType("eraser"));
         break;
       default:
         dispatch(setCurrentToolType(null));

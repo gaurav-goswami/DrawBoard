@@ -1,6 +1,15 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { setEraserSize } from "../../app/features/ToolBox";
 
-const Size : React.FC = () => {
+const Size: React.FC = () => {
+  const dispatch = useDispatch();
+
+  const changeSize = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {value} = e.target;
+    dispatch(setEraserSize(value));
+  };
+
   return (
     <>
       <input
@@ -10,6 +19,7 @@ const Size : React.FC = () => {
         max={10}
         step={1}
         className="w-[95%]"
+        onChange={changeSize}
       />
     </>
   );
