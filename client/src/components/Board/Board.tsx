@@ -15,7 +15,7 @@ const Board: React.FC = () => {
   });
 
   const { color, strokeWidth } = useAppSelector((state) => state.ToolBox);
-  
+
   useLayoutEffect(() => {
     if (!canvasRef.current) return;
     const changeDimension = () => {
@@ -29,18 +29,20 @@ const Board: React.FC = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     canvas.width = dimension.width;
-    canvas.height = dimension.height;
+    canvas.height = dimension.height - 64;
+    canvas.style.top = "64px";
 
     if (context === null) return;
 
+    const rect = canvas.getBoundingClientRect();
     const handleMouseClick = (e: MouseEvent) => {
       draw.current = true;
       context.beginPath();
-      context.moveTo(e.clientX, e.clientY);
+      context.moveTo(e.clientX - rect.left , e.clientY - rect.top);
     };
     const handleMouseMove = (e: MouseEvent) => {
       if (!draw.current) return;
-      context.lineTo(e.clientX, e.clientY);
+      context.lineTo(e.clientX - rect.left , e.clientY - rect.top);
       context.stroke();
     };
     const handleMouseLeave = (_e: MouseEvent) => {

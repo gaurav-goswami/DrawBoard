@@ -101,7 +101,7 @@ const ToolBar: React.FC = () => {
   return (
     <>
       <ToolWrapper>
-        <div className="flex items-center px-2 dark:bg-[#141416] bg-[#d4ccd44a]">
+        <div className="flex items-center px-2 dark:bg-[#141416] bg-[#d4ccd44a] h-[4rem]">
           <div className="relative" ref={asideRef}>
             <button
               className="w-max mx-2 my-4 flex gap-1 dark:bg-[#262627] bg-[#b0baf549] rounded-md items-center justify-center dark:text-white text-gray-800 dark:hover:bg-[#30363a] hover:bg-[#b0baf52e] transition-all duration-100 relative"
