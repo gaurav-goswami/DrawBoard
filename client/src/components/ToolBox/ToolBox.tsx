@@ -8,7 +8,6 @@ const ToolBox: React.FC = () => {
   const {currentTool} = useAppSelector((state) => state.Tools);
 
   if(!currentTool || currentTool === null) return null;
-  console.log("current tool is" , currentTool);
 
   return (
     <>

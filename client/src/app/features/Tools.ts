@@ -2,9 +2,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface InitialState {
   currentTool: null | string;
+  selectedTool : undefined | string;
 }
 const initialState: InitialState = {
   currentTool: null,
+  selectedTool : undefined,
 };
 export const toolTypeSlice = createSlice({
   name: "toolTypeSlice",
@@ -13,8 +15,11 @@ export const toolTypeSlice = createSlice({
     setCurrentToolType: (state, action: PayloadAction<string | null>) => {
       state.currentTool = action.payload;
     },
+    setSelectedTool : (state, action : PayloadAction<string | undefined>) => {
+      state.selectedTool = action.payload;
+    }
   },
 });
 
-export const { setCurrentToolType } = toolTypeSlice.actions;
+export const { setCurrentToolType, setSelectedTool } = toolTypeSlice.actions;
 export default toolTypeSlice.reducer;

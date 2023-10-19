@@ -8,7 +8,8 @@ import Tooltip from "../Tooltip/Tooltip";
 import AsideMenu from "../Aside/AsideMenu";
 import ToolWrapper from "../Wrapper/ToolWrapper";
 import { useDispatch } from "react-redux";
-import { setCurrentToolType } from "../../app/features/Tools";
+import { setCurrentToolType, setSelectedTool } from "../../app/features/Tools";
+import { useAppSelector } from "../../app/hooks";
 
 interface IToolBarOption {
   id: number | string;
@@ -81,8 +82,9 @@ const ToolBar: React.FC = () => {
   }, []);
 
   const dispatch = useDispatch();
-  const showTools = (dispatchValue: boolean | undefined | null) => {
-    switch (dispatchValue) {
+  const showTools = (option: IToolBarOption) => {
+    dispatch(setSelectedTool(option.tooltipTitle));
+    switch (option.dispatch) {
       case true:
         dispatch(setCurrentToolType("common"));
         break;
@@ -95,6 +97,7 @@ const ToolBar: React.FC = () => {
     }
   };
 
+  const { selectedTool } = useAppSelector((state) => state.Tools);
   return (
     <>
       <ToolWrapper>
@@ -117,8 +120,8 @@ const ToolBar: React.FC = () => {
               return (
                 <Tooltip title={option.tooltipTitle} key={option.id}>
                   <span
-                    className="dark:text-white cursor-pointer text-lg transition-all duration-100 p-2 rounded-md dark:hover:bg-[#586168] hover:bg-[#b0baf539] text-gray-700"
-                    onClick={() => showTools(option.dispatch)}
+                    className={`dark:text-white cursor-pointer text-lg transition-all duration-100 p-2 rounded-md dark:hover:bg-[#586168] hover:bg-[#b0baf539] text-gray-700 ${selectedTool === option.tooltipTitle ? "bg-[#6c80f095]" : ""}`}
+                    onClick={() => showTools(option)}
                   >
                     {option.icon}
                   </span>

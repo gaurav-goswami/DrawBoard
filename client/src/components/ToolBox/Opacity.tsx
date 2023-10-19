@@ -8,7 +8,6 @@ const Opacity: React.FC = () => {
 
   const changeOpacity = (e : React.ChangeEvent<HTMLInputElement>) => {
     const {value} = e.target;
-    console.log("type" , typeof(value));
     dispatch(setOpacity(value));
   }
 
