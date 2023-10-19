@@ -112,7 +112,7 @@ const ToolBar: React.FC = () => {
             </button>
             {open && <AsideMenu />}
           </div>
-          <div className="w-max p-2 mx-auto flex gap-1 dark:bg-[#262627] bg-white rounded-md h-[2.5rem] items-center justify-center">
+          <div className="w-max p-4 mx-auto flex gap-1 dark:bg-[#262627] bg-white rounded-md h-[2.5rem] items-center justify-center">
             {toolBarOptions.map((option) => {
               return (
                 <Tooltip title={option.tooltipTitle} key={option.id}>

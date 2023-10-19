@@ -7,7 +7,7 @@ const Size : React.FC = () => {
         type="range"
         name="opacity"
         min={1}
-        max={100}
+        max={10}
         step={1}
         className="w-[95%]"
       />

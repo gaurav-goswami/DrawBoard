@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useLayoutEffect, useRef, useState } from "react";
+import { useAppSelector } from "../../app/hooks";
 
 interface IDimension {
   height: number;
@@ -11,7 +12,7 @@ const Board: React.FC = () => {
     width: window.innerWidth,
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const changeDimension = () => {
       setDimension({
         height: window.innerHeight,
@@ -29,10 +30,16 @@ const Board: React.FC = () => {
     }
 
     return () => {
-        window.removeEventListener("resize" , changeDimension);
+      window.removeEventListener("resize", changeDimension);
     };
   }, [dimension]);
 
+  // const {color} = useAppSelector((state) => state.ToolBox);
+  // const {opacity} = useAppSelector((state) => state.ToolBox);
+  const {strokeWidth} = useAppSelector((state) => state.ToolBox);
+  console.log("stroke width is" , strokeWidth);
+   // console.log("stroke is" , color);
+  
   return (
     <>
       <canvas ref={canvasRef}></canvas>

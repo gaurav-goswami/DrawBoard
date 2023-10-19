@@ -1,7 +1,7 @@
 import React from "react";
 
 interface IStroke {
-  color?: string;
+  color : string;
 }
 const NewStroke: React.FC<IStroke> = ({ color }) => {
   const style: React.CSSProperties = color
