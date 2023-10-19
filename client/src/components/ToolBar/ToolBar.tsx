@@ -98,7 +98,7 @@ const ToolBar: React.FC = () => {
   return (
     <>
       <ToolWrapper>
-        <div className="flex items-center px-2">
+        <div className="flex items-center px-2 dark:bg-[#141416] bg-[#d4ccd44a]">
           <div className="relative" ref={asideRef}>
             <button
               className="w-max mx-2 my-4 flex gap-1 dark:bg-[#262627] bg-[#b0baf549] rounded-md items-center justify-center dark:text-white text-gray-800 dark:hover:bg-[#30363a] hover:bg-[#b0baf52e] transition-all duration-100 relative"
@@ -112,7 +112,7 @@ const ToolBar: React.FC = () => {
             </button>
             {open && <AsideMenu />}
           </div>
-          <div className="w-max p-4 mx-auto my-4 flex gap-1 dark:bg-[#262627] bg-white rounded-md h-[2.5rem] items-center justify-center">
+          <div className="w-max p-2 mx-auto flex gap-1 dark:bg-[#262627] bg-white rounded-md h-[2.5rem] items-center justify-center">
             {toolBarOptions.map((option) => {
               return (
                 <Tooltip title={option.tooltipTitle} key={option.id}>

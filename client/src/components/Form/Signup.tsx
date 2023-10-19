@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import FormWrapper from "../Wrapper/FormWrapper";
 import { ISignupUserState } from "../../Interface";
 import changeHandler from "../../utility/changeHandler";
+import CTAButton from "../Button/CTAButton";
 
 interface ISignUpProps {
   setPage: (x: boolean) => void;
@@ -18,6 +19,7 @@ const SignUp: React.FC<ISignUpProps> = (props) => {
     email: "",
     password: "",
   });
+  const [disable, setDisable] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     changeHandler(e, setSignupDetails, signupDetails);
@@ -65,12 +67,12 @@ const SignUp: React.FC<ISignUpProps> = (props) => {
             icon={BiShow}
           />
 
-          {/* <CTAButton
+          <CTAButton
             style="border-green-500 hover:bg-green-500"
             disable={disable}
           >
             Signup
-          </CTAButton> */}
+          </CTAButton>
         </form>
         <p className="">
           Already have an account?{" "}

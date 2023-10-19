@@ -4,6 +4,7 @@ import ToolBar from "../components/ToolBar/ToolBar";
 import ToolWrapper from "../components/Wrapper/ToolWrapper";
 import ToolBox from "../components/ToolBox/ToolBox";
 import { useAppSelector } from "../app/hooks";
+import Board from "../components/Board/Board";
 
 const Home: React.FC = () => {
   const { theme } = useAppSelector((state) => state.Theme);
@@ -17,10 +18,11 @@ const Home: React.FC = () => {
   return (
     <>
       <Wrapper>
-        <ToolBar />
         <ToolWrapper>
+          <ToolBar />
           <ToolBox />
         </ToolWrapper>
+        <Board />
       </Wrapper>
     </>
   );

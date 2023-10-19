@@ -33,3 +33,10 @@ export interface ISignupUserState {
   email : string,
   password : string
 }
+
+export interface ICTAButtonProps {
+  children: React.ReactNode;
+  style?: string;
+  disable ?: boolean;
+  fn?: React.MouseEventHandler<HTMLButtonElement>;
+}
