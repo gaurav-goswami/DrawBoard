@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import CustomInput from "./CustomInput";
 import { BiShow } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import FormWrapper from "../Wrapper/FormWrapper";
+import changeHandler from "../../utility/changeHandler";
+import { ISignInUserState } from "../../Interface";
 
 interface ILoginProps {
   setPage: (x: boolean) => void;
 }
 const Login: React.FC<ILoginProps> = ({ setPage }) => {
+
+  const [loginDetails, setLoginDetails] = useState<ISignInUserState>({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    changeHandler(e, setLoginDetails, loginDetails);
+  };
+
   return (
     <>
       <FormWrapper>
@@ -41,8 +53,8 @@ const Login: React.FC<ILoginProps> = ({ setPage }) => {
             autocomplete="off"
             placeholder="Enter email"
             required={true}
-            onChange={() => console.log("1234")}
-            value={""}
+            onChange={handleChange}
+            value={loginDetails.email}
           />
 
           <CustomInput
@@ -51,9 +63,10 @@ const Login: React.FC<ILoginProps> = ({ setPage }) => {
             autocomplete="off"
             placeholder="Enter password"
             required={true}
-            onChange={() => console.log("1234")}
-            value={""}
+            onChange={handleChange}
+            value={loginDetails.password}
             icon={BiShow}
+            changeTo="text"
           />
 
           {/* <CTAButton

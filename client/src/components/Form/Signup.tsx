@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import CustomInput from "./CustomInput";
 import { BiShow } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import FormWrapper from "../Wrapper/FormWrapper";
+import { ISignupUserState } from "../../Interface";
+import changeHandler from "../../utility/changeHandler";
 
 interface ISignUpProps {
   setPage: (x: boolean) => void;
@@ -10,6 +12,16 @@ interface ISignUpProps {
 
 const SignUp: React.FC<ISignUpProps> = (props) => {
   const { setPage } = props;
+
+  const [signupDetails, setSignupDetails] = useState<ISignupUserState>({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    changeHandler(e, setSignupDetails, signupDetails);
+  };
 
   return (
     <>
@@ -28,8 +40,8 @@ const SignUp: React.FC<ISignUpProps> = (props) => {
             autocomplete="off"
             placeholder="Enter username"
             required={true}
-            onChange={() => console.log("void")}
-            value={""}
+            onChange={handleChange}
+            value={signupDetails.username}
           />
 
           <CustomInput
@@ -38,8 +50,8 @@ const SignUp: React.FC<ISignUpProps> = (props) => {
             autocomplete="off"
             placeholder="Enter email"
             required={true}
-            onChange={() => console.log("void")}
-            value={""}
+            onChange={handleChange}
+            value={signupDetails.email}
           />
 
           <CustomInput
@@ -48,8 +60,8 @@ const SignUp: React.FC<ISignUpProps> = (props) => {
             autocomplete="off"
             placeholder="Enter password"
             required={true}
-            onChange={() => console.log("void")}
-            value={""}
+            onChange={handleChange}
+            value={signupDetails.password}
             icon={BiShow}
           />
 
