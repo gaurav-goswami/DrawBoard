@@ -19,7 +19,7 @@ const CommonTools: React.FC = () => {
   const changeStrokeWidth = (strokeWidth: number) => {
     dispatch(setStrokeWidth(strokeWidth));
   };
-  
+
   return (
     <>
       {/* common for rectangle, circle, pencil */}

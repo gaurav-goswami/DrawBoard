@@ -4,6 +4,7 @@ import { BiUndo, BiRedo, BiSolidPencil, BiCircle } from "react-icons/bi";
 import { LuEraser } from "react-icons/lu";
 import { RiRectangleLine } from "react-icons/ri";
 import { MdOutlineMenu, MdClose } from "react-icons/md";
+import {AiOutlineMinus} from "react-icons/ai";
 import Tooltip from "../Tooltip/Tooltip";
 import AsideMenu from "../Aside/AsideMenu";
 import ToolWrapper from "../Wrapper/ToolWrapper";
@@ -33,30 +34,36 @@ const toolBarOptions: IToolBarOption[] = [
   },
   {
     id: 3,
+    icon: <AiOutlineMinus />,
+    tooltipTitle: "Line",
+    dispatch: null,
+  },
+  {
+    id: 4,
     icon: <BiCircle />,
     tooltipTitle: "Circle",
     dispatch: true,
   },
   {
-    id: 4,
+    id: 5,
     icon: <BiUndo />,
     tooltipTitle: "Undo",
     dispatch: null,
   },
   {
-    id: 5,
+    id: 6,
     icon: <BiRedo />,
     tooltipTitle: "Redo",
     dispatch: null,
   },
   {
-    id: 6,
+    id: 7,
     icon: <LuEraser />,
     tooltipTitle: "Eraser",
     dispatch: false,
   },
   {
-    id: 7,
+    id: 8,
     icon: <HiOutlineCloudDownload />,
     tooltipTitle: "Download",
     dispatch: null,
@@ -101,7 +108,7 @@ const ToolBar: React.FC = () => {
   return (
     <>
       <ToolWrapper>
-        <div className="flex items-center px-2 dark:bg-[#141416] bg-[#d4ccd44a] h-[4rem]">
+        <div className="flex items-center px-2 h-[4rem]">
           <div className="relative" ref={asideRef}>
             <button
               className="w-max mx-2 my-4 flex gap-1 dark:bg-[#262627] bg-[#b0baf549] rounded-md items-center justify-center dark:text-white text-gray-800 dark:hover:bg-[#30363a] hover:bg-[#b0baf52e] transition-all duration-100 relative"

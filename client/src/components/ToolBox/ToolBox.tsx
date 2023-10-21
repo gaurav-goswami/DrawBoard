@@ -11,7 +11,7 @@ const ToolBox: React.FC = () => {
 
   return (
     <>
-      <div className="w-[12.5rem] h-max dark:bg-[#1e1e1e] bg-white absolute left-4 p-2 top-2 rounded-lg flex flex-col">
+      <div className="w-[12.5rem] h-max dark:bg-[#1e1e1e] bg-white absolute left-4 p-2 top-20 rounded-lg flex flex-col">
         {
           currentTool === "common" ? <CommonTools /> : currentTool === "eraser" ? <EraserTool /> : null
         }

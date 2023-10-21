@@ -6,7 +6,7 @@ interface IToolWrapper {
 const ToolWrapper: React.FC<IToolWrapper> = ({ children }) => {
   return (
     <>
-      <div className="max-w-[1900px] mx-auto relative">{children}</div>
+      <div className="max-w-[1900px] mx-auto fixed top-0 right-0 left-0 z-10">{children}</div>
     </>
   );
 };

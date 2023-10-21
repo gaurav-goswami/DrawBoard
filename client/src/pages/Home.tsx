@@ -18,8 +18,8 @@ const Home: React.FC = () => {
   return (
     <>
       <Wrapper>
-        <ToolBar />
         <ToolWrapper>
+          <ToolBar />
           <ToolBox />
         </ToolWrapper>
         <Board />

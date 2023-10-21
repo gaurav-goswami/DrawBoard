@@ -15,6 +15,7 @@ const Board: React.FC = () => {
   });
 
   const { color, strokeWidth } = useAppSelector((state) => state.ToolBox);
+  const { selectedTool } = useAppSelector((state) => state.Tools);
 
   useLayoutEffect(() => {
     if (!canvasRef.current) return;
@@ -29,23 +30,22 @@ const Board: React.FC = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     canvas.width = dimension.width;
-    canvas.height = dimension.height - 64;
-    canvas.style.top = "64px";
+    canvas.height = dimension.height;
 
     if (context === null) return;
 
-    const rect = canvas.getBoundingClientRect();
+    if (selectedTool !== "Pencil") return;
     const handleMouseClick = (e: MouseEvent) => {
       draw.current = true;
       context.beginPath();
-      context.moveTo(e.clientX - rect.left , e.clientY - rect.top);
+      context.moveTo(e.clientX, e.clientY);
     };
     const handleMouseMove = (e: MouseEvent) => {
       if (!draw.current) return;
-      context.lineTo(e.clientX - rect.left , e.clientY - rect.top);
+      context.lineTo(e.clientX, e.clientY);
       context.stroke();
     };
-    const handleMouseLeave = (_e: MouseEvent) => {
+    const handleMouseLeave = () => {
       draw.current = false;
     };
 
@@ -59,7 +59,7 @@ const Board: React.FC = () => {
       canvas.removeEventListener("mousemove", handleMouseMove);
       canvas.removeEventListener("mouseup", handleMouseLeave);
     };
-  }, [dimension]);
+  }, [dimension, selectedTool]);
 
   useEffect(() => {
     if (!canvasRef.current) return;

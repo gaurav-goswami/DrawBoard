@@ -7,7 +7,7 @@ interface InitialState {
   eraserSize : string;
 }
 const initialState: InitialState = {
-  color: "#ea5adf",
+  color: "#000",
   strokeWidth: 1,
   opacity : "10",
   eraserSize: "5",
