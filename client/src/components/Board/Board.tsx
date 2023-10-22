@@ -98,6 +98,8 @@ const Board : React.FC = () => {
   const [elements, setElements] = useState<any[]>([]);
   const {selectedTool} = useAppSelector((state) => state.Tools);
 
+  console.log("selected tool is" , selectedTool);
+
   useLayoutEffect(() => {
 
     if(!canvasRef.current) return;
@@ -117,7 +119,7 @@ const Board : React.FC = () => {
 
   const handleMouseClick : React.MouseEventHandler<HTMLCanvasElement> = (e) => {
     drawing.current = true;
-    if(!selectedTool) return;
+    if(selectedTool !== 'Box' && selectedTool !== "Line") return;
     const {clientX, clientY} = e;
 
     const element = createElement(generator, clientX, clientY, clientX, clientY, selectedTool); // the starting and ending points are same because when we first click on the mouse it will initially set it to the point where the mouse currently is, and when we move the mouse with still click on the mouse it will change the end points (clientX : x2 and clientY : y2);
@@ -129,7 +131,7 @@ const Board : React.FC = () => {
 
   const handleMouseMove : React.MouseEventHandler<HTMLCanvasElement> = (e) => {
     if(!drawing.current) return;
-    if(!selectedTool) return;
+    if(selectedTool !== 'Box' &&selectedTool !== "Line") return;
     const {clientX, clientY} = e;
     const index = elements.length-1;
     const {x1, y1} = elements[index];
