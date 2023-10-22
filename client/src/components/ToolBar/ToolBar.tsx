@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { HiOutlineCloudDownload } from "react-icons/hi";
-import { BiUndo, BiRedo, BiSolidPencil, BiCircle } from "react-icons/bi";
+import { BiUndo, BiRedo, BiSolidPencil, BiCircle, BiSelection } from "react-icons/bi";
 import { LuEraser } from "react-icons/lu";
 import { RiRectangleLine } from "react-icons/ri";
 import { MdOutlineMenu, MdClose } from "react-icons/md";
@@ -20,6 +20,12 @@ interface IToolBarOption {
 }
 
 const toolBarOptions: IToolBarOption[] = [
+  {
+    id : 0,
+    icon : <BiSelection />,
+    tooltipTitle : "Selection",
+    dispatch : null
+  },
   {
     id: 1,
     icon: <BiSolidPencil />,

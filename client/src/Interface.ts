@@ -10,7 +10,7 @@ export interface ICustomInputProps {
   style?: string;
   autocomplete?: string;
   icon?: IconType;
-  changeTo ?: string
+  changeTo?: string;
 }
 
 export interface IChangeHandler {
@@ -24,19 +24,45 @@ export interface IChangeHandler {
 }
 
 export interface ISignInUserState {
-  email : string,
-  password : string
+  email: string;
+  password: string;
 }
 
 export interface ISignupUserState {
-  username : string,
-  email : string,
-  password : string
+  username: string;
+  email: string;
+  password: string;
 }
 
 export interface ICTAButtonProps {
   children: React.ReactNode;
   style?: string;
-  disable ?: boolean;
+  disable?: boolean;
   fn?: React.MouseEventHandler<HTMLButtonElement>;
+}
+
+export interface IElement {
+  (
+    id: number,
+    generator: any,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    elementType: string | undefined
+  ): any;
+}
+
+export interface IUpdateElement{
+  (
+    id: number,
+    generator: any,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    elementType: string | undefined,
+    elements : any,
+    setElements : (element : any) => void
+  ): any;
 }
