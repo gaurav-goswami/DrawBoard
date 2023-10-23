@@ -66,3 +66,9 @@ export interface IUpdateElement{
     setElements : (element : any) => void
   ): any;
 }
+
+export interface IAdjustCoordinates {
+  (
+    elements : any
+  ) : any
+}

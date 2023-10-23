@@ -1,6 +1,6 @@
 import React, { useRef , useLayoutEffect, useState } from 'react';
 import rough from "roughjs";
-import {createElement, updateElement} from '../../utility/elementFn';
+import {adjustElementCoordinates, createElement, updateElement} from '../../utility/elementFn';
 import { useAppSelector } from '../../app/hooks';
 import getElement from '../../utility/elementPosition';
 
@@ -72,6 +72,12 @@ const Board : React.FC = () => {
   }
 
   const handleMouseLeave = () => {
+    const index = elements.length - 1;
+    const {id} = elements[index] 
+    if(drawing.current){
+      const {x1, y1, x2, y2} = adjustElementCoordinates(elements[index]);
+      updateElement(id, generator, x1, y1, x2, y2, selectedTool, elements, setElements);
+    }
     drawing.current = false;
   }
   
