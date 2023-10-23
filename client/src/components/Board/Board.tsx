@@ -1,8 +1,8 @@
-import React, { useRef , useLayoutEffect, useState } from 'react';
+import React, { useRef , useLayoutEffect, useState, MouseEventHandler } from 'react';
 import rough from "roughjs";
 import {adjustElementCoordinates, createElement, updateElement} from '../../utility/elementFn';
 import { useAppSelector } from '../../app/hooks';
-import getElement from '../../utility/elementPosition';
+import getElement, { cursorForPosition, resizedCoordinates } from '../../utility/elementPosition';
 
 const Board : React.FC = () => {
 
@@ -11,9 +11,10 @@ const Board : React.FC = () => {
   const generator = rough.generator();
   const [elements, setElements] = useState<any[]>([]);
   const [selectedElement, setSelectedElement] = useState<any>(null);
+  const [action, setAction] = useState<string>("");
 
   const {selectedTool} = useAppSelector((state) => state.Tools);
-  
+
   useLayoutEffect(() => {
     if(!canvasRef.current) return;
     const canvas = canvasRef.current;
@@ -38,6 +39,12 @@ const Board : React.FC = () => {
         const offsetX = clientX - element?.x1;
         const offsetY = clientY - element?.y1;
         setSelectedElement({...element , offsetX , offsetY});
+
+        if(element.position === "inside"){
+          setAction("moving");
+        }else{
+          setAction("resize");
+        }
       }
     }
 
@@ -49,25 +56,34 @@ const Board : React.FC = () => {
 
   }
 
-  const handleMouseMove : React.MouseEventHandler<HTMLCanvasElement> = (e) => {
+  const handleMouseMove : MouseEventHandler<HTMLCanvasElement> = (e) => {
     if(!drawing.current) return;
     const {clientX, clientY} = e;
     
     if(selectedTool === "Selection"){
-      if(selectedElement){
+      // const element = getElement(clientX, clientY, elements);
+      // e.target.style.cursor = element ? cursorForPosition(element.position) : "default";
+
+      if(selectedElement && action === "moving"){
         const {id, x1, y1, x2, y2, elementType , offsetX, offsetY} = selectedElement;
         const width = x2 - x1;
         const height = y2 - y1;
         const newX1 = clientX - offsetX;
         const newY1 = clientY - offsetY;
         updateElement(id, generator, newX1, newY1, newX1 + width, newY1 + height, elementType, elements, setElements);
+      }else if(action === "resize"){
+        const {id, position ,elementType, ...coordinates} = selectedElement;
+        const {x1, y1, x2, y2} = resizedCoordinates(clientX, clientY, position, coordinates)
+        updateElement(id , generator, x1, y1, x2, y2, elementType, elements, setElements);
       }
     }
     
     if(selectedTool !== 'Box' && selectedTool !== "Line") return;
-    const index = elements.length-1;
-    const {x1, y1} = elements[index];
-    updateElement(index, generator, x1, y1, clientX, clientY, selectedTool, elements, setElements);
+    if(elements.length > 0){
+      const index = elements.length-1;
+      const {x1, y1} = elements[index];
+      updateElement(index, generator, x1, y1, clientX, clientY, selectedTool, elements, setElements);
+    }
   }
 
   const handleMouseLeave = () => {
