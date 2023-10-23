@@ -41,7 +41,6 @@ export const updateElement: IUpdateElement = (
     y2,
     elementType
   );
-
   const elementCopyArr = [...elements];
   elementCopyArr[id] = updatedElement;
   setElements(elementCopyArr);

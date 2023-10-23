@@ -13,10 +13,7 @@ const Board : React.FC = () => {
   const [selectedElement, setSelectedElement] = useState<any>(null);
 
   const {selectedTool} = useAppSelector((state) => state.Tools);
-
-  console.log("selected tool is" , selectedTool);
-  console.log("element" , elements);
-
+  
   useLayoutEffect(() => {
     if(!canvasRef.current) return;
     const canvas = canvasRef.current;
@@ -57,12 +54,14 @@ const Board : React.FC = () => {
     const {clientX, clientY} = e;
     
     if(selectedTool === "Selection"){
-      const {id, x1, y1, x2, y2, elementType , offsetX, offsetY} = selectedElement;
-      const width = x2 - x1;
-      const height = y2 - y1;
-      const newX1 = clientX - offsetX;
-      const newY1 = clientY - offsetY;
-      updateElement(id, generator, newX1, newY1, newX1 + width, newY1 + height, elementType, elements, setElements);
+      if(selectedElement){
+        const {id, x1, y1, x2, y2, elementType , offsetX, offsetY} = selectedElement;
+        const width = x2 - x1;
+        const height = y2 - y1;
+        const newX1 = clientX - offsetX;
+        const newY1 = clientY - offsetY;
+        updateElement(id, generator, newX1, newY1, newX1 + width, newY1 + height, elementType, elements, setElements);
+      }
     }
     
     if(selectedTool !== 'Box' && selectedTool !== "Line") return;
@@ -72,11 +71,13 @@ const Board : React.FC = () => {
   }
 
   const handleMouseLeave = () => {
-    const index = elements.length - 1;
-    const {id} = elements[index] 
-    if(drawing.current){
-      const {x1, y1, x2, y2} = adjustElementCoordinates(elements[index]);
-      updateElement(id, generator, x1, y1, x2, y2, selectedTool, elements, setElements);
+    if(elements.length > 0){
+      const index = elements.length - 1;
+      const {id, elementType} = elements[index] 
+      if(drawing.current){
+        const {x1, y1, x2, y2} = adjustElementCoordinates(elements[index]);
+        updateElement(id, generator, x1, y1, x2, y2, elementType, elements, setElements);
+      }
     }
     drawing.current = false;
   }
