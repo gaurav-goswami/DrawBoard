@@ -2,7 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 
 dotenv.config({
-    path : "./config/config.env"
+    path : "./.env"
 })
 
 const app = express();
