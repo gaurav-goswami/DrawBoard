@@ -8,7 +8,7 @@ const startServer = async () => {
         server.listen(PORT, () => {
             console.log(`Server is listening on PORT ${PORT}`)
         })
-        // await connectDb()
+        await connectDb()
     } catch (error) {
         console.log("Error while starting server");
         process.exit(1);
