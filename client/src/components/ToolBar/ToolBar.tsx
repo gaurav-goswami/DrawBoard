@@ -1,16 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import { HiOutlineCloudDownload } from "react-icons/hi";
-import { BiUndo, BiRedo, BiSolidPencil, BiCircle, BiSelection } from "react-icons/bi";
+import {
+  BiSolidPencil,
+  BiCircle,
+  BiSelection,
+} from "react-icons/bi";
 import { LuEraser } from "react-icons/lu";
 import { RiRectangleLine } from "react-icons/ri";
 import { MdOutlineMenu, MdClose } from "react-icons/md";
-import {AiOutlineMinus} from "react-icons/ai";
+import { AiOutlineMinus } from "react-icons/ai";
 import Tooltip from "../Tooltip/Tooltip";
 import AsideMenu from "../Aside/AsideMenu";
 import ToolWrapper from "../Wrapper/ToolWrapper";
 import { useDispatch } from "react-redux";
 import { setCurrentToolType, setSelectedTool } from "../../app/features/Tools";
 import { useAppSelector } from "../../app/hooks";
+import Undo from "../Button/Undo";
+import Redo from "../Button/Redo";
 
 interface IToolBarOption {
   id: number | string;
@@ -21,10 +27,10 @@ interface IToolBarOption {
 
 const toolBarOptions: IToolBarOption[] = [
   {
-    id : 0,
-    icon : <BiSelection />,
-    tooltipTitle : "Selection",
-    dispatch : null
+    id: 0,
+    icon: <BiSelection />,
+    tooltipTitle: "Selection",
+    dispatch: null,
   },
   {
     id: 1,
@@ -52,24 +58,12 @@ const toolBarOptions: IToolBarOption[] = [
   },
   {
     id: 5,
-    icon: <BiUndo />,
-    tooltipTitle: "Undo",
-    dispatch: null,
-  },
-  {
-    id: 6,
-    icon: <BiRedo />,
-    tooltipTitle: "Redo",
-    dispatch: null,
-  },
-  {
-    id: 7,
     icon: <LuEraser />,
     tooltipTitle: "Eraser",
     dispatch: false,
   },
   {
-    id: 8,
+    id: 6,
     icon: <HiOutlineCloudDownload />,
     tooltipTitle: "Download",
     dispatch: null,
@@ -133,7 +127,11 @@ const ToolBar: React.FC = () => {
               return (
                 <Tooltip title={option.tooltipTitle} key={option.id}>
                   <span
-                    className={`dark:text-white cursor-pointer text-lg transition-all duration-100 p-2 rounded-md dark:hover:bg-[#586168] hover:bg-[#b0baf539] text-gray-700 ${selectedTool === option.tooltipTitle ? "bg-[#6c80f095]" : ""}`}
+                    className={`dark:text-white cursor-pointer text-lg transition-all duration-100 p-2 rounded-md dark:hover:bg-[#586168] hover:bg-[#b0baf539] text-gray-700 ${
+                      selectedTool === option.tooltipTitle
+                        ? "bg-[#6c80f095]"
+                        : ""
+                    }`}
                     onClick={() => showTools(option)}
                   >
                     {option.icon}
@@ -141,6 +139,8 @@ const ToolBar: React.FC = () => {
                 </Tooltip>
               );
             })}
+            <Undo />
+            <Redo />
           </div>
         </div>
       </ToolWrapper>

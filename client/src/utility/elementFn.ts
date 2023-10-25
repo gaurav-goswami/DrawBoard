@@ -43,7 +43,7 @@ export const updateElement: IUpdateElement = (
   );
   const elementCopyArr = [...elements];
   elementCopyArr[id] = updatedElement;
-  setElements(elementCopyArr);
+  setElements(elementCopyArr, true);
 };
 
 export const adjustElementCoordinates: IAdjustCoordinates = (elements) => {
