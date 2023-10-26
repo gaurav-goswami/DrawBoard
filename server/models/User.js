@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
+        trim : true
     },
     password: {
         type: String,
@@ -19,10 +20,10 @@ const userSchema = new mongoose.Schema({
     }
 })
 
-userSchema.pre("save" , async function () {
+userSchema.pre("save" , async function (next) {
     const hashedPassword = await hashPassword(this.password);
-    console.log("before save" , hashedPassword);
     this.password = hashedPassword;
+    next();
 })
 
 const User = mongoose.model('user', userSchema);
