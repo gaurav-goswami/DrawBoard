@@ -14,6 +14,7 @@ import {
 import { useAppSelector } from "../../app/hooks";
 import getElement, { resizedCoordinates } from "../../utility/elementPosition";
 import useHistory from "../../hooks/useHistory";
+import getMouseCoordinates from "../../utility/mouseCoordinates";
 
 const Board: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -22,6 +23,9 @@ const Board: React.FC = () => {
   const [elements, setElements, undo, redo] = useHistory([]);
   const [selectedElement, setSelectedElement] = useState<any>(null);
   const [action, setAction] = useState<string>("");
+  const [panOffset, setPanOffset] = useState<any>({ x: 0, y: 0 });
+  const [startPanMousePosition,setStartPanMousePosition] = useState<any>({ x: 0, y: 0 })
+
   const { selectedTool } = useAppSelector((state) => state.Tools);
 
   useEffect(() => {
@@ -33,13 +37,24 @@ const Board: React.FC = () => {
         redo();
       }
     };
-
     document.addEventListener("keydown", undoRedo);
-
     return () => {
       document.removeEventListener("keydown", undoRedo);
     };
   }, [undo, redo]);
+
+  useEffect(() => {
+    const panFn = (e: WheelEvent) => {
+      setPanOffset((prev : any) => ({
+        x : prev.x - e.deltaX,
+        y : prev.y - e.deltaY
+      }))
+    };
+    document.addEventListener("wheel", panFn);
+    return () => {
+      document.removeEventListener("wheel", panFn);
+    };
+  }, []);
 
   useLayoutEffect(() => {
     if (!canvasRef.current) return;
@@ -48,19 +63,34 @@ const Board: React.FC = () => {
     canvas.height = window.innerHeight;
     const context = canvas?.getContext("2d");
     context?.clearRect(0, 0, canvas.width, canvas.height);
+
+    context?.save();
+    context?.translate(panOffset.x, panOffset.y);
     const roughCanvas = rough.canvas(canvas);
 
     if (elements !== undefined) {
-      console.log("i" , elements);
+      console.log("i", elements);
       elements.forEach((element: any) => {
         roughCanvas.draw(element.element);
       });
     }
-  }, [elements]);
+    context?.restore();
+  }, [elements, panOffset, selectedElement]);
 
   const handleMouseClick: React.MouseEventHandler<HTMLCanvasElement> = (e) => {
     drawing.current = true;
-    const { clientX, clientY } = e;
+    const { clientX, clientY } = getMouseCoordinates(
+      e,
+      panOffset.x,
+      panOffset.y
+    );
+
+    if(e.button === 1){
+      setAction("panning");
+      setStartPanMousePosition({x : clientX, y : clientY});
+      return;
+    }
+
     if (selectedTool === "Selection") {
       const element = getElement(clientX, clientY, elements);
       if (element) {
@@ -94,7 +124,20 @@ const Board: React.FC = () => {
 
   const handleMouseMove: MouseEventHandler<HTMLCanvasElement> = (e) => {
     if (!drawing.current) return;
-    const { clientX, clientY } = e;
+    const { clientX, clientY } = getMouseCoordinates(
+      e,
+      panOffset.x,
+      panOffset.y
+    );
+
+    if(action === "panning") {
+      const deltaX = clientX - startPanMousePosition.x;
+      const deltaY = clientY - startPanMousePosition.y;
+      setPanOffset((prev : any) => ({
+        x : prev.x + deltaX,
+        y : prev.y + deltaY
+      }))
+    }
 
     if (selectedTool === "Selection") {
       // const element = getElement(clientX, clientY, elements);
@@ -159,6 +202,7 @@ const Board: React.FC = () => {
   };
 
   const handleMouseLeave = () => {
+    // const { clientX, clientY } = getMouseCoordinates(e , panOffset.x, panOffset.y);
     if (elements.length > 0) {
       const index = elements.length - 1;
       const { id, elementType } = elements[index];
@@ -187,6 +231,7 @@ const Board: React.FC = () => {
         onMouseDown={handleMouseClick}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseLeave}
+        // className="absolute z-1"
       />
     </>
   );
