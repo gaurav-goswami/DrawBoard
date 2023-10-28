@@ -15,6 +15,13 @@ import { useAppSelector } from "../../app/hooks";
 import getElement, { resizedCoordinates } from "../../utility/elementPosition";
 import useHistory from "../../hooks/useHistory";
 import getMouseCoordinates from "../../utility/mouseCoordinates";
+import { BiZoomOut, BiZoomIn } from "react-icons/bi";
+import { zoom } from "../../utility/zoom";
+
+type Offset = {
+  x: number;
+  y: number;
+};
 
 const Board: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -23,10 +30,17 @@ const Board: React.FC = () => {
   const [elements, setElements, undo, redo] = useHistory([]);
   const [selectedElement, setSelectedElement] = useState<any>(null);
   const [action, setAction] = useState<string>("");
-  const [panOffset, setPanOffset] = useState<any>({ x: 0, y: 0 });
-  const [startPanMousePosition,setStartPanMousePosition] = useState<any>({ x: 0, y: 0 })
+  const [panOffset, setPanOffset] = useState<Offset>({ x: 0, y: 0 });
+  const [scale, setScale] = useState<number>(1);
+  const [scaleOffset, setScaleOffset] = useState<Offset>({ x: 0, y: 0 });
+  const [startPanMousePosition, setStartPanMousePosition] = useState<any>({
+    x: 0,
+    y: 0,
+  });
 
   const { selectedTool } = useAppSelector((state) => state.Tools);
+
+  console.log("scale is" , scale);
 
   useEffect(() => {
     const undoRedo = (e: KeyboardEvent) => {
@@ -45,10 +59,10 @@ const Board: React.FC = () => {
 
   useEffect(() => {
     const panFn = (e: WheelEvent) => {
-      setPanOffset((prev : any) => ({
-        x : prev.x - e.deltaX,
-        y : prev.y - e.deltaY
-      }))
+      setPanOffset((prev: any) => ({
+        x: prev.x - e.deltaX,
+        y: prev.y - e.deltaY,
+      }));
     };
     document.addEventListener("wheel", panFn);
     return () => {
@@ -64,8 +78,16 @@ const Board: React.FC = () => {
     const context = canvas?.getContext("2d");
     context?.clearRect(0, 0, canvas.width, canvas.height);
 
+    const scaledWidth = canvas.width * scale;
+    const scaledHeight = canvas.height * scale;
+    const scaleOffsetX = (scaledWidth - canvas.width) / 2;
+    const scaleOffsetY = (scaledHeight - canvas.height) / 2;
+    setScaleOffset({x : scaleOffsetX , y : scaleOffsetY});
+
     context?.save();
-    context?.translate(panOffset.x, panOffset.y);
+    context?.translate(panOffset.x * scale - scaleOffsetX, panOffset.y * scale - scaleOffsetY);
+    context?.scale(scale, scale);
+
     const roughCanvas = rough.canvas(canvas);
 
     if (elements !== undefined) {
@@ -75,19 +97,20 @@ const Board: React.FC = () => {
       });
     }
     context?.restore();
-  }, [elements, panOffset, selectedElement]);
+  }, [elements, panOffset, selectedElement, scale]);
 
   const handleMouseClick: React.MouseEventHandler<HTMLCanvasElement> = (e) => {
     drawing.current = true;
     const { clientX, clientY } = getMouseCoordinates(
       e,
-      panOffset.x,
-      panOffset.y
+      scale,
+      scaleOffset,
+      panOffset,
     );
 
-    if(e.button === 1){
+    if (e.button === 1) {
       setAction("panning");
-      setStartPanMousePosition({x : clientX, y : clientY});
+      setStartPanMousePosition({ x: clientX, y: clientY });
       return;
     }
 
@@ -126,17 +149,18 @@ const Board: React.FC = () => {
     if (!drawing.current) return;
     const { clientX, clientY } = getMouseCoordinates(
       e,
-      panOffset.x,
-      panOffset.y
+      scale,
+      scaleOffset,
+      panOffset,
     );
 
-    if(action === "panning") {
+    if (action === "panning") {
       const deltaX = clientX - startPanMousePosition.x;
       const deltaY = clientY - startPanMousePosition.y;
-      setPanOffset((prev : any) => ({
-        x : prev.x + deltaX,
-        y : prev.y + deltaY
-      }))
+      setPanOffset((prev: any) => ({
+        x: prev.x + deltaX,
+        y: prev.y + deltaY,
+      }));
     }
 
     if (selectedTool === "Selection") {
@@ -233,6 +257,17 @@ const Board: React.FC = () => {
         onMouseUp={handleMouseLeave}
         // className="absolute z-1"
       />
+      <div className="fixed bottom-4 left-4 dark:bg-[#262627] bg-[#e3e4eb9d] w-max flex justify-between gap-2 items-center p-1">
+        <button className="w-max h-max px-2 dark:text-white" onClick={() => zoom(-0.1, setScale)}>
+          <BiZoomOut />
+        </button>
+        <span className="dark:text-white cursor-pointer" onClick={() => setScale(1)}>
+          {new Intl.NumberFormat("en-GB", { style: "percent" }).format(scale)}
+        </span>
+        <button className="w-max h-max px-2 dark:text-white" onClick={() => zoom(0.1, setScale)}>
+          <BiZoomIn />
+        </button>
+      </div>
     </>
   );
 };
