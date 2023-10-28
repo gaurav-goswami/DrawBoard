@@ -1,10 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { HiOutlineCloudDownload } from "react-icons/hi";
-import {
-  BiSolidPencil,
-  BiCircle,
-  BiSelection,
-} from "react-icons/bi";
+import { BiSolidPencil, BiCircle, BiSelection } from "react-icons/bi";
 import { LuEraser } from "react-icons/lu";
 import { RiRectangleLine } from "react-icons/ri";
 import { MdOutlineMenu, MdClose } from "react-icons/md";
@@ -15,8 +11,6 @@ import ToolWrapper from "../Wrapper/ToolWrapper";
 import { useDispatch } from "react-redux";
 import { setCurrentToolType, setSelectedTool } from "../../app/features/Tools";
 import { useAppSelector } from "../../app/hooks";
-import Undo from "../Button/Undo";
-import Redo from "../Button/Redo";
 
 interface IToolBarOption {
   id: number | string;
@@ -139,8 +133,10 @@ const ToolBar: React.FC = () => {
                 </Tooltip>
               );
             })}
-            <Undo />
-            <Redo />
+          </div>
+          <div className="flex gap-4 absolute right-4">
+            <span className="text-gray-500">ctrl+z (undo)</span>
+            <span className="text-gray-500">ctrl+y (redo)</span>
           </div>
         </div>
       </ToolWrapper>

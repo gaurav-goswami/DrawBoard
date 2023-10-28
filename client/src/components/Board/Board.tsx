@@ -22,7 +22,6 @@ const Board: React.FC = () => {
   const [elements, setElements, undo, redo] = useHistory([]);
   const [selectedElement, setSelectedElement] = useState<any>(null);
   const [action, setAction] = useState<string>("");
-
   const { selectedTool } = useAppSelector((state) => state.Tools);
 
   useEffect(() => {
@@ -52,6 +51,7 @@ const Board: React.FC = () => {
     const roughCanvas = rough.canvas(canvas);
 
     if (elements !== undefined) {
+      console.log("i" , elements);
       elements.forEach((element: any) => {
         roughCanvas.draw(element.element);
       });

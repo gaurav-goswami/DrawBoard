@@ -7,7 +7,7 @@ const store = configureStore({
     reducer : {
         Theme,
         Tools,
-        ToolBox
+        ToolBox,
     }
 });
 
