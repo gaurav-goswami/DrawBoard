@@ -72,3 +72,8 @@ export interface IAdjustCoordinates {
     elements : any
   ) : any
 }
+
+export interface ISendOtpResponse {
+  success : string,
+  message : string
+}
