@@ -53,7 +53,7 @@ export interface IElement {
   ): any;
 }
 
-export interface IUpdateElement{
+export interface IUpdateElement {
   (
     id: number,
     generator: any,
@@ -62,18 +62,70 @@ export interface IUpdateElement{
     x2: number,
     y2: number,
     elementType: string | undefined,
-    elements : any,
-    setElements : (element : any) => void
+    elements: any,
+    setElements: (element: any) => void
   ): any;
 }
 
 export interface IAdjustCoordinates {
-  (
-    elements : any
-  ) : any
+  (elements: any): any;
+}
+
+export interface IRegisterUserState {
+  username: string;
+  email: string;
+  password: string;
+  otp?: string | number;
 }
 
 export interface ISendOtpResponse {
-  success : string,
-  message : string
+  success: string;
+  message: string;
+}
+
+export interface ICommonInterface {
+  setDisable: (x: boolean) => void;
+  navigate: (to: string) => void;
+}
+
+interface ILoginUser extends ICommonInterface {
+  loginFunc: (userDetails: any) => void | any;
+  userDetails: ISignInUserState;
+}
+
+interface ISignupUser extends ICommonInterface {
+  signUpFunc: (userDetails: any) => void | any;
+  userDetails: IRegisterUserState;
+}
+
+interface ISendOtp extends ICommonInterface {
+  otpFunc: (userDetails: any) => void | any;
+  userDetails: IRegisterUserState;
+}
+
+export interface IsendOtp {
+  <T>(
+    otpFunc: ISendOtp["otpFunc"],
+    userDetails: ISendOtp["userDetails"],
+    setDisable: ISendOtp["setDisable"],
+    navigate: ISendOtp["navigate"]
+  ): Promise<T> | any;
+}
+
+export interface IsignupUser {
+  <T>(
+    signUpFunc: ISignupUser["signUpFunc"],
+    userDetails: ISignupUser["userDetails"],
+    setDisable: ISignupUser["setDisable"],
+    navigate: ISignupUser["navigate"]
+  ): Promise<T> | any;
+}
+
+export interface IloginUser {
+  <T>(
+    loginFunc: ILoginUser["loginFunc"],
+    userDetails: ILoginUser["userDetails"],
+    setDisable: ILoginUser["setDisable"],
+    navigate: ILoginUser["navigate"]
+  ): Promise<T> | any;
 }
