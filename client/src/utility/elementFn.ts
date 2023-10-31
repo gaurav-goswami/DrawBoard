@@ -1,4 +1,10 @@
-import { IAdjustCoordinates, IElement, IUpdateElement } from "../Interface";
+import getStroke from "perfect-freehand";
+import {
+  IAdjustCoordinates,
+  IDrawElement,
+  IElement,
+  IUpdateElement,
+} from "../Interface";
 
 export const createElement: IElement = (
   id,
@@ -10,15 +16,25 @@ export const createElement: IElement = (
   elementType
 ) => {
   if (elementType === undefined || !elementType) return;
-  if (elementType !== "Box" && elementType !== "Line") return;
+  // if (elementType !== "Box" && elementType !== "Line") return;
 
-  const element =
-    elementType === "Line"
-      ? generator.line(x1, y1, x2, y2)
-      : elementType === "Box"
-      ? generator.rectangle(x1, y1, x2 - x1, y2 - y1)
-      : false;
-  return { id, x1, y1, x2, y2, element, elementType };
+  switch (elementType) {
+    case "Line":
+    case "Box":
+      const element =
+        elementType === "Line"
+          ? generator.line(x1, y1, x2, y2)
+          : elementType === "Box"
+          ? generator.rectangle(x1, y1, x2 - x1, y2 - y1)
+          : false;
+      return { id, x1, y1, x2, y2, element, elementType };
+
+    case "Pencil":
+      return { id, elementType, points: [{ x: x1, y: y1 }] };
+
+    default:
+      break;
+  }
 };
 
 export const updateElement: IUpdateElement = (
@@ -32,17 +48,29 @@ export const updateElement: IUpdateElement = (
   elements,
   setElements
 ) => {
-  const updatedElement = createElement(
-    id,
-    generator,
-    x1,
-    y1,
-    x2,
-    y2,
-    elementType
-  );
   const elementCopyArr = [...elements];
-  elementCopyArr[id] = updatedElement;
+  switch (elementType) {
+    case "Line":
+    case "Box":
+      elementCopyArr[id] = createElement(
+        id,
+        generator,
+        x1,
+        y1,
+        x2,
+        y2,
+        elementType
+      );
+      break;
+    case "Pencil":
+      elementCopyArr[id].points = [
+        ...elementCopyArr[id].points,
+        { x: x2, y: y2 },
+      ];
+      break;
+    default:
+      break;
+  }
   setElements(elementCopyArr, true);
 };
 
@@ -61,4 +89,39 @@ export const adjustElementCoordinates: IAdjustCoordinates = (elements) => {
       return { x1: x2, x2: x1, y1: y2, y2: y1 };
     }
   }
+};
+
+const getSvgPathFromStroke = (stroke: any[]) => {
+  if (!stroke.length) return;
+  const d = stroke.reduce(
+    (accumulator, [x0, y0], i, arr) => {
+      const [x1, y1] = arr[(i + 1) % arr.length];
+      accumulator.push(x0, y0, (x0 + x1) / 2, (y0 + y1) / 2);
+      return accumulator;
+    },
+    ["M", ...stroke[0], "Q"]
+  );
+
+  d.push("Z");
+  return d.join(" ");
+};
+
+export const drawElement: IDrawElement = (roughCanvas, context, element) => {
+  switch (element.elementType) {
+    case "Line":
+    case "Box":
+      roughCanvas.draw(element.element);
+      break;
+
+    case "Pencil":
+      const stroke = getSvgPathFromStroke(getStroke(element.points));
+      context.fill(new Path2D(stroke));
+      break;
+    default:
+      break;
+  }
+};
+
+export const adjustmentRequired = (type: string | any) => {
+  return ["Line", "Box"].includes(type);
 };

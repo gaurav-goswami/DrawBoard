@@ -49,7 +49,7 @@ export interface IElement {
     y1: number,
     x2: number,
     y2: number,
-    elementType: string | undefined
+    elementType ?: string | undefined
   ): any;
 }
 
@@ -63,13 +63,27 @@ export interface IUpdateElement {
     y2: number,
     elementType: string | undefined,
     elements: any,
-    setElements: (element: any) => void
+    setElements: (element: any, overwrite : boolean) => void
   ): any;
 }
 
 export interface IAdjustCoordinates {
   (elements: any): any;
 }
+
+export interface IDrawElement {
+  (
+    roughCanvas : any,
+    context : any,
+    element : any,
+  ) : void;
+}
+
+
+
+
+
+
 
 export interface IRegisterUserState {
   username: string;

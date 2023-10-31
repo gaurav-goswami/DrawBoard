@@ -8,7 +8,9 @@ import React, {
 import rough from "roughjs";
 import {
   adjustElementCoordinates,
+  adjustmentRequired,
   createElement,
+  drawElement,
   updateElement,
 } from "../../utility/elementFn";
 import { useAppSelector } from "../../app/hooks";
@@ -39,8 +41,6 @@ const Board: React.FC = () => {
   });
 
   const { selectedTool } = useAppSelector((state) => state.Tools);
-
-  console.log("scale is" , scale);
 
   useEffect(() => {
     const undoRedo = (e: KeyboardEvent) => {
@@ -91,9 +91,8 @@ const Board: React.FC = () => {
     const roughCanvas = rough.canvas(canvas);
 
     if (elements !== undefined) {
-      console.log("i", elements);
       elements.forEach((element: any) => {
-        roughCanvas.draw(element.element);
+        drawElement(roughCanvas, context, element);
       });
     }
     context?.restore();
@@ -207,7 +206,7 @@ const Board: React.FC = () => {
       }
     }
 
-    if (selectedTool !== "Box" && selectedTool !== "Line") return;
+    if (selectedTool !== "Box" && selectedTool !== "Line" && selectedTool !== "Pencil") return;
     if (elements.length > 0) {
       const index = elements.length - 1;
       const { x1, y1 } = elements[index];
@@ -230,7 +229,7 @@ const Board: React.FC = () => {
     if (elements.length > 0) {
       const index = elements.length - 1;
       const { id, elementType } = elements[index];
-      if (drawing.current) {
+      if (drawing.current && adjustmentRequired(selectedTool)) {
         const { x1, y1, x2, y2 } = adjustElementCoordinates(elements[index]);
         updateElement(
           id,
