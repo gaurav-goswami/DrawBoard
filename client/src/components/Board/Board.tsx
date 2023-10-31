@@ -82,10 +82,13 @@ const Board: React.FC = () => {
     const scaledHeight = canvas.height * scale;
     const scaleOffsetX = (scaledWidth - canvas.width) / 2;
     const scaleOffsetY = (scaledHeight - canvas.height) / 2;
-    setScaleOffset({x : scaleOffsetX , y : scaleOffsetY});
+    setScaleOffset({ x: scaleOffsetX, y: scaleOffsetY });
 
     context?.save();
-    context?.translate(panOffset.x * scale - scaleOffsetX, panOffset.y * scale - scaleOffsetY);
+    context?.translate(
+      panOffset.x * scale - scaleOffsetX,
+      panOffset.y * scale - scaleOffsetY
+    );
     context?.scale(scale, scale);
 
     const roughCanvas = rough.canvas(canvas);
@@ -104,7 +107,7 @@ const Board: React.FC = () => {
       e,
       scale,
       scaleOffset,
-      panOffset,
+      panOffset
     );
 
     if (e.button === 1) {
@@ -116,9 +119,19 @@ const Board: React.FC = () => {
     if (selectedTool === "Selection") {
       const element = getElement(clientX, clientY, elements);
       if (element) {
-        const offsetX = clientX - element?.x1;
-        const offsetY = clientY - element?.y1;
-        setSelectedElement({ ...element, offsetX, offsetY });
+        if (element.elementType === "Pencil") {
+          const xOffset: any = element.points.map(
+            (points: { x: number; y: number }) => clientX - points.x
+          );
+          const yOffset: any = element.points.map(
+            (points: { x: number; y: number }) => clientY - points.y
+          );
+          setSelectedElement({ ...element, xOffset, yOffset });
+        } else {
+          const offsetX = clientX - element?.x1;
+          const offsetY = clientY - element?.y1;
+          setSelectedElement({ ...element, offsetX, offsetY });
+        }
         // setElements((prev : any) => prev);
 
         if (element.position === "inside") {
@@ -150,7 +163,7 @@ const Board: React.FC = () => {
       e,
       scale,
       scaleOffset,
-      panOffset,
+      panOffset
     );
 
     if (action === "panning") {
@@ -167,23 +180,29 @@ const Board: React.FC = () => {
       // e.target.style.cursor = element ? cursorForPosition(element.position) : "default";
 
       if (selectedElement && action === "moving") {
-        const { id, x1, y1, x2, y2, elementType, offsetX, offsetY } =
-          selectedElement;
-        const width = x2 - x1;
-        const height = y2 - y1;
-        const newX1 = clientX - offsetX;
-        const newY1 = clientY - offsetY;
-        updateElement(
-          id,
-          generator,
-          newX1,
-          newY1,
-          newX1 + width,
-          newY1 + height,
-          elementType,
-          elements,
-          setElements
-        );
+        if (elements.elementType === "Pencil") {
+          const newPoints = selectedElement.points.map((_ : never , index : number) => {
+            return {
+              x: clientX - selectedElement.xOffset[index],
+              y: clientY - selectedElement.yOffset[index]
+            }
+          })
+          const elementsCopyArr = [...elements];
+          elementsCopyArr[selectedElement.id]  = {
+            ...elementsCopyArr[selectedElement.id],
+            points : newPoints
+          }
+          elementsCopyArr[selectedElement.id].points = newPoints;
+          setElements(elementsCopyArr, true);
+        }else{
+          const { id, x1, y1, x2, y2, elementType, offsetX, offsetY } =
+            selectedElement;
+          const width = x2 - x1;
+          const height = y2 - y1;
+          const newX1 = clientX - offsetX;
+          const newY1 = clientY - offsetY;
+          updateElement(id, generator, newX1, newY1, newX1 + width, newY1 + height, elementType, elements, setElements);
+        }
       } else if (action === "resize") {
         const { id, position, elementType, ...coordinates } = selectedElement;
         const { x1, y1, x2, y2 } = resizedCoordinates(
@@ -192,21 +211,16 @@ const Board: React.FC = () => {
           position,
           coordinates
         );
-        updateElement(
-          id,
-          generator,
-          x1,
-          y1,
-          x2,
-          y2,
-          elementType,
-          elements,
-          setElements
-        );
+        updateElement(id, generator, x1, y1, x2, y2, elementType, elements, setElements);
       }
     }
 
-    if (selectedTool !== "Box" && selectedTool !== "Line" && selectedTool !== "Pencil") return;
+    if (
+      selectedTool !== "Box" &&
+      selectedTool !== "Line" &&
+      selectedTool !== "Pencil"
+    )
+      return;
     if (elements.length > 0) {
       const index = elements.length - 1;
       const { x1, y1 } = elements[index];
@@ -257,13 +271,22 @@ const Board: React.FC = () => {
         // className="absolute z-1"
       />
       <div className="fixed bottom-4 left-4 dark:bg-[#262627] bg-[#e3e4eb9d] w-max flex justify-between gap-2 items-center p-1">
-        <button className="w-max h-max px-2 dark:text-white" onClick={() => zoom(-0.1, setScale)}>
+        <button
+          className="w-max h-max px-2 dark:text-white"
+          onClick={() => zoom(-0.1, setScale)}
+        >
           <BiZoomOut />
         </button>
-        <span className="dark:text-white cursor-pointer" onClick={() => setScale(1)}>
+        <span
+          className="dark:text-white cursor-pointer"
+          onClick={() => setScale(1)}
+        >
           {new Intl.NumberFormat("en-GB", { style: "percent" }).format(scale)}
         </span>
-        <button className="w-max h-max px-2 dark:text-white" onClick={() => zoom(0.1, setScale)}>
+        <button
+          className="w-max h-max px-2 dark:text-white"
+          onClick={() => zoom(0.1, setScale)}
+        >
           <BiZoomIn />
         </button>
       </div>
