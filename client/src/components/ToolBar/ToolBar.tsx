@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { HiOutlineCloudDownload } from "react-icons/hi";
-import { BiSolidPencil, BiCircle, BiSelection } from "react-icons/bi";
+import { BiSolidPencil, BiCircle, BiSelection, BiText } from "react-icons/bi";
 import { LuEraser } from "react-icons/lu";
 import { RiRectangleLine } from "react-icons/ri";
 import { MdOutlineMenu, MdClose } from "react-icons/md";
@@ -52,12 +52,18 @@ const toolBarOptions: IToolBarOption[] = [
   },
   {
     id: 5,
+    icon: <BiText />,
+    tooltipTitle: "Text",
+    dispatch: null,
+  },
+  {
+    id: 6,
     icon: <LuEraser />,
     tooltipTitle: "Eraser",
     dispatch: false,
   },
   {
-    id: 6,
+    id: 7,
     icon: <HiOutlineCloudDownload />,
     tooltipTitle: "Download",
     dispatch: null,

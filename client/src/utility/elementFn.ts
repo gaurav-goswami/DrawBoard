@@ -32,6 +32,9 @@ export const createElement: IElement = (
     case "Pencil":
       return { id, elementType, points: [{ x: x1, y: y1 }] };
 
+    case "Text":
+      return { id, elementType, x1, y1, text: "Hey" };
+
     default:
       break;
   }
@@ -117,6 +120,12 @@ export const drawElement: IDrawElement = (roughCanvas, context, element) => {
       const stroke = getSvgPathFromStroke(getStroke(element.points)); //options
       context.fill(new Path2D(stroke));
       break;
+
+    case "Text":
+      context.font = "24px sans-serif";
+      context.fillText(element.text, element.x1, element.y1);
+      break;
+
     default:
       break;
   }
