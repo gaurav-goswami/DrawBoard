@@ -110,6 +110,9 @@ const getSvgPathFromStroke = (stroke: any[]) => {
 };
 
 export const drawElement: IDrawElement = (roughCanvas, context, element) => {
+
+  if(!element) return;
+
   switch (element.elementType) {
     case "Line":
     case "Box":

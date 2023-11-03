@@ -39,6 +39,7 @@ const Board: React.FC = () => {
     x: 0,
     y: 0,
   });
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const { selectedTool } = useAppSelector((state) => state.Tools);
 
@@ -56,6 +57,13 @@ const Board: React.FC = () => {
       document.removeEventListener("keydown", undoRedo);
     };
   }, [undo, redo]);
+
+  useEffect(() => {
+    const textArea = textAreaRef.current;
+    if (action === "writing" && textArea !== null) {
+      textArea.focus();
+    }
+  }, [action]);
 
   useEffect(() => {
     const panFn = (e: WheelEvent) => {
@@ -226,7 +234,8 @@ const Board: React.FC = () => {
             setElements
           );
         }
-      } else if (action === "resize") {
+      } 
+      else if (action === "resize") {
         const { id, position, elementType, ...coordinates } = selectedElement;
         const { x1, y1, x2, y2 } = resizedCoordinates(
           clientX,
@@ -234,17 +243,7 @@ const Board: React.FC = () => {
           position,
           coordinates
         );
-        updateElement(
-          id,
-          generator,
-          x1,
-          y1,
-          x2,
-          y2,
-          elementType,
-          elements,
-          setElements
-        );
+        updateElement(id, generator, x1, y1, x2, y2, elementType, elements, setElements);
       }
     }
 
@@ -271,7 +270,7 @@ const Board: React.FC = () => {
     }
   };
 
-  const handleMouseLeave = (e : any) => {
+  const handleMouseLeave = (e: any) => {
     // const { clientX, clientY } = getMouseCoordinates(e , panOffset.x, panOffset.y);
     // if (selectedElement) {
     //   const index = elements.length - 1;
@@ -297,7 +296,12 @@ const Board: React.FC = () => {
     // setSelectedElement(null);
     // drawing.current = false;
 
-    const { clientX, clientY } = getMouseCoordinates(e , scale, scaleOffset, panOffset);
+    const { clientX, clientY } = getMouseCoordinates(
+      e,
+      scale,
+      scaleOffset,
+      panOffset
+    );
     if (selectedElement) {
       if (
         selectedElement.type === "text" &&
@@ -339,9 +343,10 @@ const Board: React.FC = () => {
     <>
       {action === "writing" ? (
         <textarea
-          className='fixed'
-          style={{top : selectedElement.y1 , left : selectedElement.x1}}
-          autoFocus = {true}
+          ref={textAreaRef}
+          className="fixed"
+          style={{ top: selectedElement.y1, left: selectedElement.x1 }}
+          autoFocus={true}
         ></textarea>
       ) : null}
 
