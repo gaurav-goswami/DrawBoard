@@ -140,21 +140,32 @@ const Board: React.FC = () => {
           setAction("resize");
         }
       }
+    } else {
+      const id = elements.length;
+      const element = createElement(
+        id,
+        generator,
+        clientX,
+        clientY,
+        clientX,
+        clientY,
+        selectedTool
+      );
+      setElements((prevState: any) => [...prevState, element]);
+      setSelectedElement(element);
+
+      setAction(selectedTool === "Text" ? "writing" : "drawing");
     }
 
-    const id = elements.length;
-    const element = createElement(
-      id,
-      generator,
-      clientX,
-      clientY,
-      clientX,
-      clientY,
-      selectedTool
-    ); // the starting and ending points are same because when we first click on the mouse it will initially set it to the point where the mouse currently is, and when we move the mouse with still click on the mouse it will change the end points (clientX : x2 and clientY : y2);
-    // console.log("element is" , element);
-    if (!element) return;
-    setElements([...elements, element]);
+    // const id = elements.length;
+    // const element = createElement(
+
+    // ); // the starting and ending points are same because when we first click on the mouse it will initially set it to the point where the mouse currently is, and when we move the mouse with still click on the mouse it will change the end points (clientX : x2 and clientY : y2);
+    // // console.log("element is" , element);
+    // if (!element) return;
+    // setElements((prev : any) => [...prev, element]);
+
+    // console.log("action is" , action);
   };
 
   const handleMouseMove: MouseEventHandler<HTMLCanvasElement> = (e) => {
@@ -181,27 +192,39 @@ const Board: React.FC = () => {
 
       if (selectedElement && action === "moving") {
         if (elements.elementType === "Pencil") {
-          const newPoints = selectedElement.points.map((_ : never , index : number) => {
-            return {
-              x: clientX - selectedElement.xOffset[index],
-              y: clientY - selectedElement.yOffset[index]
+          const newPoints = selectedElement.points.map(
+            (_: never, index: number) => {
+              return {
+                x: clientX - selectedElement.xOffset[index],
+                y: clientY - selectedElement.yOffset[index],
+              };
             }
-          })
+          );
           const elementsCopyArr = [...elements];
-          elementsCopyArr[selectedElement.id]  = {
+          elementsCopyArr[selectedElement.id] = {
             ...elementsCopyArr[selectedElement.id],
-            points : newPoints
-          }
+            points: newPoints,
+          };
           elementsCopyArr[selectedElement.id].points = newPoints;
           setElements(elementsCopyArr, true);
-        }else{
+        } else {
           const { id, x1, y1, x2, y2, elementType, offsetX, offsetY } =
             selectedElement;
           const width = x2 - x1;
           const height = y2 - y1;
           const newX1 = clientX - offsetX;
           const newY1 = clientY - offsetY;
-          updateElement(id, generator, newX1, newY1, newX1 + width, newY1 + height, elementType, elements, setElements);
+          updateElement(
+            id,
+            generator,
+            newX1,
+            newY1,
+            newX1 + width,
+            newY1 + height,
+            elementType,
+            elements,
+            setElements
+          );
         }
       } else if (action === "resize") {
         const { id, position, elementType, ...coordinates } = selectedElement;
@@ -211,7 +234,17 @@ const Board: React.FC = () => {
           position,
           coordinates
         );
-        updateElement(id, generator, x1, y1, x2, y2, elementType, elements, setElements);
+        updateElement(
+          id,
+          generator,
+          x1,
+          y1,
+          x2,
+          y2,
+          elementType,
+          elements,
+          setElements
+        );
       }
     }
 
@@ -238,12 +271,49 @@ const Board: React.FC = () => {
     }
   };
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = (e : any) => {
     // const { clientX, clientY } = getMouseCoordinates(e , panOffset.x, panOffset.y);
-    if (elements.length > 0) {
-      const index = elements.length - 1;
+    // if (selectedElement) {
+    //   const index = elements.length - 1;
+    //   const { id, elementType } = elements[index];
+    //   if (drawing.current && adjustmentRequired(selectedTool)) {
+    //     const { x1, y1, x2, y2 } = adjustElementCoordinates(elements[index]);
+    //     updateElement(
+    //       id,
+    //       generator,
+    //       x1,
+    //       y1,
+    //       x2,
+    //       y2,
+    //       elementType,
+    //       elements,
+    //       setElements
+    //     );
+    //   }
+    // }
+    // if(action === "writing") return;
+
+    // setAction("none");
+    // setSelectedElement(null);
+    // drawing.current = false;
+
+    const { clientX, clientY } = getMouseCoordinates(e , scale, scaleOffset, panOffset);
+    if (selectedElement) {
+      if (
+        selectedElement.type === "text" &&
+        clientX - selectedElement.offsetX === selectedElement.x1 &&
+        clientY - selectedElement.offsetY === selectedElement.y1
+      ) {
+        setAction("writing");
+        return;
+      }
+
+      const index = selectedElement.id;
       const { id, elementType } = elements[index];
-      if (drawing.current && adjustmentRequired(selectedTool)) {
+      if (
+        (action === "drawing" || action === "resizing") &&
+        adjustmentRequired(elementType)
+      ) {
         const { x1, y1, x2, y2 } = adjustElementCoordinates(elements[index]);
         updateElement(
           id,
@@ -258,11 +328,23 @@ const Board: React.FC = () => {
         );
       }
     }
+
+    if (action === "writing") return;
+    setAction("none");
+    setSelectedElement(null);
     drawing.current = false;
   };
 
   return (
     <>
+      {action === "writing" ? (
+        <textarea
+          className='fixed'
+          style={{top : selectedElement.y1 , left : selectedElement.x1}}
+          autoFocus = {true}
+        ></textarea>
+      ) : null}
+
       <canvas
         ref={canvasRef}
         onMouseDown={handleMouseClick}

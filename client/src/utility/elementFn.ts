@@ -33,7 +33,7 @@ export const createElement: IElement = (
       return { id, elementType, points: [{ x: x1, y: y1 }] };
 
     case "Text":
-      return { id, elementType, x1, y1, text: "Hey" };
+      return { id, elementType, x1, y1, text: "" };
 
     default:
       break;
