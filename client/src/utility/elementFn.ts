@@ -25,8 +25,8 @@ export const createElement: IElement = (
         elementType === "Line"
           ? generator.line(x1, y1, x2, y2)
           : elementType === "Box"
-          ? generator.rectangle(x1, y1, x2 - x1, y2 - y1)
-          : false;
+          ? ( x2 !== null && y2 !== null ? generator.rectangle(x1, y1, x2 - x1, y2 - y1) : false) : false
+
       return { id, x1, y1, x2, y2, element, elementType };
 
     case "Pencil":
@@ -49,7 +49,8 @@ export const updateElement: IUpdateElement = (
   y2,
   elementType,
   elements,
-  setElements
+  setElements,
+  options
 ) => {
   const elementCopyArr = [...elements];
   switch (elementType) {
@@ -71,6 +72,11 @@ export const updateElement: IUpdateElement = (
         { x: x2, y: y2 },
       ];
       break;
+
+    case "Text":
+      elementCopyArr[id].text = options.text
+      break;
+
     default:
       break;
   }
@@ -111,9 +117,7 @@ const getSvgPathFromStroke = (stroke: any[]) => {
 
 export const drawElement: IDrawElement = (roughCanvas, context, element) => {
 
-  if(!element) return;
-
-  switch (element.elementType) {
+  switch (element?.elementType) {
     case "Line":
     case "Box":
       roughCanvas.draw(element.element);

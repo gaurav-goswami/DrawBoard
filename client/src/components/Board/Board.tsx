@@ -43,6 +43,13 @@ const Board: React.FC = () => {
 
   const { selectedTool } = useAppSelector((state) => state.Tools);
 
+  const handleBlur = (e : React.ChangeEvent<HTMLTextAreaElement>) => {
+    const {id, x1, y1, elementType} = selectedElement;
+    setAction("none");
+    setSelectedElement(null);
+    updateElement(id, generator, x1, y1, null, null, elementType, elements, setElements, {text : e.target.value})
+  }
+
   useEffect(() => {
     const undoRedo = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "z") {
@@ -60,10 +67,12 @@ const Board: React.FC = () => {
 
   useEffect(() => {
     const textArea = textAreaRef.current;
-    if (action === "writing" && textArea !== null) {
-      textArea.focus();
+    if (action === "writing" && textArea) {
+      setTimeout(() => {
+        textArea.focus();
+      }, 0);
     }
-  }, [action]);
+  }, [action, selectedElement]);
 
   useEffect(() => {
     const panFn = (e: WheelEvent) => {
@@ -110,6 +119,9 @@ const Board: React.FC = () => {
   }, [elements, panOffset, selectedElement, scale]);
 
   const handleMouseClick: React.MouseEventHandler<HTMLCanvasElement> = (e) => {
+
+    if(action === "writing") return;
+
     drawing.current = true;
     const { clientX, clientY } = getMouseCoordinates(
       e,
@@ -271,7 +283,7 @@ const Board: React.FC = () => {
   };
 
   const handleMouseLeave = (e: any) => {
-    // const { clientX, clientY } = getMouseCoordinates(e , panOffset.x, panOffset.y);
+    // const { clientX, clientY } = getMouseCoordinates(e , scale, scaleOffset ,panOffset);
     // if (selectedElement) {
     //   const index = elements.length - 1;
     //   const { id, elementType } = elements[index];
@@ -290,7 +302,7 @@ const Board: React.FC = () => {
     //     );
     //   }
     // }
-    // if(action === "writing") return;
+    // // if(action === "writing") return;
 
     // setAction("none");
     // setSelectedElement(null);
@@ -304,13 +316,15 @@ const Board: React.FC = () => {
     );
     if (selectedElement) {
       if (
-        selectedElement.type === "text" &&
+        selectedElement.elementType === "Text" &&
         clientX - selectedElement.offsetX === selectedElement.x1 &&
         clientY - selectedElement.offsetY === selectedElement.y1
       ) {
         setAction("writing");
         return;
       }
+
+      console.log(selectedElement);
 
       const index = selectedElement.id;
       const { id, elementType } = elements[index];
@@ -346,7 +360,7 @@ const Board: React.FC = () => {
           ref={textAreaRef}
           className="fixed"
           style={{ top: selectedElement.y1, left: selectedElement.x1 }}
-          autoFocus={true}
+          onBlur={handleBlur}
         ></textarea>
       ) : null}
 

@@ -43,6 +43,7 @@ const onLine : IOnLine = (x1, y1, x2, y2, x, y, disc) => {
 };
 
 const positionWithInElement: IElement = (x, y, element) => {
+
   if(!element) return;
   const { elementType, x1, y1, x2, y2 } = element;
 

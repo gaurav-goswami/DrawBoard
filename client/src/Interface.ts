@@ -47,8 +47,8 @@ export interface IElement {
     generator: any,
     x1: number,
     y1: number,
-    x2: number,
-    y2: number,
+    x2: number | null,
+    y2: number | null,
     elementType ?: string | undefined
   ): any;
 }
@@ -59,11 +59,12 @@ export interface IUpdateElement {
     generator: any,
     x1: number,
     y1: number,
-    x2: number,
-    y2: number,
+    x2: number | null,
+    y2: number | null,
     elementType: string | undefined,
     elements: any,
-    setElements: (element: any, overwrite : boolean) => void
+    setElements: (element: any, overwrite : boolean) => void,
+    options ?: any
   ): any;
 }
 
