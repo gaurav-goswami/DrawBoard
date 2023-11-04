@@ -47,7 +47,7 @@ const Board: React.FC = () => {
     const {id, x1, y1, elementType} = selectedElement;
     setAction("none");
     setSelectedElement(null);
-    updateElement(id, generator, x1, y1, null, null, elementType, elements, setElements, {text : e.target.value})
+    updateElement(id, generator, x1, y1, null, null, elementType, elements, setElements, {text : e.target.value}, canvasRef.current?.getContext("2d"))
   }
 
   useEffect(() => {
@@ -70,6 +70,7 @@ const Board: React.FC = () => {
     if (action === "writing" && textArea) {
       setTimeout(() => {
         textArea.focus();
+        textArea.value = selectedElement.text
       }, 0);
     }
   }, [action, selectedElement]);
@@ -112,6 +113,7 @@ const Board: React.FC = () => {
 
     if (elements !== undefined) {
       elements.forEach((element: any) => {
+        if(action === "writing" && selectedElement.id === element.id) return;
         drawElement(roughCanvas, context, element);
       });
     }
@@ -122,7 +124,7 @@ const Board: React.FC = () => {
 
     if(action === "writing") return;
 
-    drawing.current = true;
+    // drawing.current = true;
     const { clientX, clientY } = getMouseCoordinates(
       e,
       scale,
@@ -152,7 +154,7 @@ const Board: React.FC = () => {
           const offsetY = clientY - element?.y1;
           setSelectedElement({ ...element, offsetX, offsetY });
         }
-        // setElements((prev : any) => prev);
+        setElements((prev : any) => prev);
 
         if (element.position === "inside") {
           setAction("moving");
@@ -189,7 +191,7 @@ const Board: React.FC = () => {
   };
 
   const handleMouseMove: MouseEventHandler<HTMLCanvasElement> = (e) => {
-    if (!drawing.current) return;
+    // if (!drawing.current) return;
     const { clientX, clientY } = getMouseCoordinates(
       e,
       scale,
@@ -206,115 +208,164 @@ const Board: React.FC = () => {
       }));
     }
 
-    if (selectedTool === "Selection") {
-      // const element = getElement(clientX, clientY, elements);
-      // e.target.style.cursor = element ? cursorForPosition(element.position) : "default";
+    // if (selectedTool === "Selection") {
+    //   // const element = getElement(clientX, clientY, elements);
+    //   // e.target.style.cursor = element ? cursorForPosition(element.position) : "default";
+      
 
-      if (selectedElement && action === "moving") {
-        if (elements.elementType === "Pencil") {
-          const newPoints = selectedElement.points.map(
-            (_: never, index: number) => {
-              return {
-                x: clientX - selectedElement.xOffset[index],
-                y: clientY - selectedElement.yOffset[index],
-              };
-            }
-          );
-          const elementsCopyArr = [...elements];
-          elementsCopyArr[selectedElement.id] = {
-            ...elementsCopyArr[selectedElement.id],
-            points: newPoints,
-          };
-          elementsCopyArr[selectedElement.id].points = newPoints;
-          setElements(elementsCopyArr, true);
-        } else {
-          const { id, x1, y1, x2, y2, elementType, offsetX, offsetY } =
-            selectedElement;
-          const width = x2 - x1;
-          const height = y2 - y1;
-          const newX1 = clientX - offsetX;
-          const newY1 = clientY - offsetY;
-          updateElement(
-            id,
-            generator,
-            newX1,
-            newY1,
-            newX1 + width,
-            newY1 + height,
-            elementType,
-            elements,
-            setElements
-          );
-        }
-      } 
-      else if (action === "resize") {
-        const { id, position, elementType, ...coordinates } = selectedElement;
-        const { x1, y1, x2, y2 } = resizedCoordinates(
-          clientX,
-          clientY,
-          position,
-          coordinates
-        );
-        updateElement(id, generator, x1, y1, x2, y2, elementType, elements, setElements);
-      }
-    }
+    //   if (selectedElement && action === "moving") {
+    //     if (elements.elementType === "Pencil") {
+    //       const newPoints = selectedElement.points.map(
+    //         (_: never, index: number) => {
+    //           return {
+    //             x: clientX - selectedElement.xOffset[index],
+    //             y: clientY - selectedElement.yOffset[index],
+    //           };
+    //         }
+    //       );
+    //       const elementsCopyArr = [...elements];
+    //       elementsCopyArr[selectedElement.id] = {
+    //         ...elementsCopyArr[selectedElement.id],
+    //         points: newPoints,
+    //       };
+    //       elementsCopyArr[selectedElement.id].points = newPoints;
+    //       setElements(elementsCopyArr, true);
+    //     } else {
+    //       const { id, x1, y1, x2, y2, elementType, offsetX, offsetY } =
+    //         selectedElement;
+    //       const width = x2 - x1;
+    //       const height = y2 - y1;
+    //       const newX1 = clientX - offsetX;
+    //       const newY1 = clientY - offsetY;
+    //       const options = elementType === "Text" ? {text : selectedElement.text} : {};
+    //       updateElement(
+    //         id,
+    //         generator,
+    //         newX1,
+    //         newY1,
+    //         newX1 + width,
+    //         newY1 + height,
+    //         elementType,
+    //         elements,
+    //         setElements,
+    //         options
+    //       );
+    //     }
+    //   } 
+      // else if (action === "resize") {
+      //   const { id, position, elementType, ...coordinates } = selectedElement;
+      //   const { x1, y1, x2, y2 } = resizedCoordinates(
+      //     clientX,
+      //     clientY,
+      //     position,
+      //     coordinates
+      //   );
+      //   updateElement(id, generator, x1, y1, x2, y2, elementType, elements, setElements);
+      // }
+    // }
 
-    if (
-      selectedTool !== "Box" &&
-      selectedTool !== "Line" &&
-      selectedTool !== "Pencil"
-    )
-      return;
-    if (elements.length > 0) {
+    // if (
+    //   selectedTool !== "Box" &&
+    //   selectedTool !== "Line" &&
+    //   selectedTool !== "Pencil"
+    // )
+    //   return;
+    // if (elements.length > 0) {
+    //   const index = elements.length - 1;
+    //   const { x1, y1 } = elements[index];
+    //   updateElement(
+    //     index,
+    //     generator,
+    //     x1,
+    //     y1,
+    //     clientX,
+    //     clientY,
+    //     selectedTool,
+    //     elements,
+    //     setElements
+    //   );
+    // }
+    
+    // if (selectedTool === "selection") {
+    //   const element = getElementAtPosition(clientX, clientY, elements);
+    //   event.target.style.cursor = element ? cursorForPosition(element.position) : "default";
+    // }
+
+    if (action === "drawing") {
       const index = elements.length - 1;
       const { x1, y1 } = elements[index];
-      updateElement(
-        index,
-        generator,
-        x1,
-        y1,
+      updateElement(index,
+            generator,
+            x1,
+            y1,
+            clientX,
+            clientY,
+            selectedTool,
+            elements,
+            setElements);
+    } else if (action === "moving") {
+      if (selectedElement.elementType === "Pencil") {
+        const newPoints = selectedElement.points.map((_ : any, index : number) => ({
+          x: clientX - selectedElement.xOffset[index],
+          y: clientY - selectedElement.yOffset[index],
+        }));
+        const elementsCopy = [...elements];
+        elementsCopy[selectedElement.id] = {
+          ...elementsCopy[selectedElement.id],
+          points: newPoints,
+        };
+        setElements(elementsCopy, true);
+      } else {
+        const { id, x1, y1, x2, y2, elementType, offsetX, offsetY } = selectedElement;
+        const width = x2 - x1;
+        const height = y2 - y1;
+        const newX1 = clientX - offsetX;
+        const newY1 = clientY - offsetY;
+        const options = elementType === "Text" ? {text : selectedElement.text} : {};
+        updateElement( id,
+                  generator,
+                  newX1,
+                  newY1,
+                  newX1 + width,
+                  newY1 + height,
+                  elementType,
+                  elements,
+                  setElements,
+                  options);
+      }
+    } else if (action === "resize") {
+      const { id, position, elementType, ...coordinates } = selectedElement;
+      const { x1, y1, x2, y2 } = resizedCoordinates(
         clientX,
         clientY,
-        selectedTool,
-        elements,
-        setElements
+        position,
+        coordinates
       );
+      updateElement(id, generator, x1, y1, x2, y2, elementType, elements, setElements);
     }
   };
 
   const handleMouseLeave = (e: any) => {
-    // const { clientX, clientY } = getMouseCoordinates(e , scale, scaleOffset ,panOffset);
-    // if (selectedElement) {
-    //   const index = elements.length - 1;
-    //   const { id, elementType } = elements[index];
-    //   if (drawing.current && adjustmentRequired(selectedTool)) {
-    //     const { x1, y1, x2, y2 } = adjustElementCoordinates(elements[index]);
-    //     updateElement(
-    //       id,
-    //       generator,
-    //       x1,
-    //       y1,
-    //       x2,
-    //       y2,
-    //       elementType,
-    //       elements,
-    //       setElements
-    //     );
-    //   }
-    // }
-    // // if(action === "writing") return;
-
-    // setAction("none");
-    // setSelectedElement(null);
-    // drawing.current = false;
-
     const { clientX, clientY } = getMouseCoordinates(
       e,
       scale,
       scaleOffset,
       panOffset
     );
+
+    const {clientX : cx, clientY : cy} = e;
+
     if (selectedElement) {
+      console.log(selectedElement);
+
+      if(selectedElement.elementType === "Text" &&
+       cx - selectedElement.offsetX === selectedElement.x1 &&
+       cy - selectedElement.offsetY === selectedElement.y1
+       ){
+        setAction("writing");
+        return;
+       }
+
       if (
         selectedElement.elementType === "Text" &&
         clientX - selectedElement.offsetX === selectedElement.x1 &&
@@ -358,7 +409,7 @@ const Board: React.FC = () => {
       {action === "writing" ? (
         <textarea
           ref={textAreaRef}
-          className="fixed"
+          className="fixed m-0 p-0 border-none outline-none resize overflow-hidden whitespace-pre bg-transparent text-[20px] "
           style={{ top: selectedElement.y1, left: selectedElement.x1 }}
           onBlur={handleBlur}
         ></textarea>

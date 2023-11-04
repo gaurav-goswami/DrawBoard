@@ -64,7 +64,8 @@ export interface IUpdateElement {
     elementType: string | undefined,
     elements: any,
     setElements: (element: any, overwrite : boolean) => void,
-    options ?: any
+    options ?: any,
+    context ?: any
   ): any;
 }
 

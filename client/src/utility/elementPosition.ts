@@ -70,6 +70,10 @@ const positionWithInElement: IElement = (x, y, element) => {
       });
 
       return betweenAnyPoint ? "inside" : null
+
+    case "Text" : 
+      return x >= x1 && x <= x2 && y >= y1 && y <= y2 ? "inside" : null
+
     default:
       break;
   }

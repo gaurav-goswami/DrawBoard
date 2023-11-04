@@ -33,7 +33,7 @@ export const createElement: IElement = (
       return { id, elementType, points: [{ x: x1, y: y1 }] };
 
     case "Text":
-      return { id, elementType, x1, y1, text: "" };
+      return { id, elementType, x1, y1, x2, y2, text: "" };
 
     default:
       break;
@@ -50,7 +50,8 @@ export const updateElement: IUpdateElement = (
   elementType,
   elements,
   setElements,
-  options
+  options,
+  context
 ) => {
   const elementCopyArr = [...elements];
   switch (elementType) {
@@ -74,7 +75,18 @@ export const updateElement: IUpdateElement = (
       break;
 
     case "Text":
-      elementCopyArr[id].text = options.text
+      const textWidth = context.measureText(options.text).width;
+      const textHeight = 20;
+      elementCopyArr[id] = {
+        ...createElement(  id,
+          generator,
+          x1,
+          y1,
+          x1 + textWidth,
+          y1 + textHeight,
+          elementType),
+          text : options.text
+      }
       break;
 
     default:
@@ -129,7 +141,8 @@ export const drawElement: IDrawElement = (roughCanvas, context, element) => {
       break;
 
     case "Text":
-      context.font = "24px sans-serif";
+      context.textBaseLine = "top";
+      context.font = "20px sans-serif";
       context.fillText(element.text, element.x1, element.y1);
       break;
 
