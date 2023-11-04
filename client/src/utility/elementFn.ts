@@ -21,6 +21,7 @@ export const createElement: IElement = (
   switch (elementType) {
     case "Line":
     case "Box":
+      if(x1 === undefined) return;
       const element =
         elementType === "Line"
           ? generator.line(x1, y1, x2, y2)
@@ -51,7 +52,6 @@ export const updateElement: IUpdateElement = (
   elements,
   setElements,
   options,
-  context
 ) => {
   const elementCopyArr = [...elements];
   switch (elementType) {
@@ -75,7 +75,11 @@ export const updateElement: IUpdateElement = (
       break;
 
     case "Text":
-      const textWidth = context.measureText(options.text).width;
+
+      const canvas = document.getElementById("canvas") as HTMLCanvasElement;
+      const textWidth = canvas?.getContext("2d")?.measureText(options.text).width;
+
+      if(textWidth === undefined) return;
       const textHeight = 20;
       elementCopyArr[id] = {
         ...createElement(  id,

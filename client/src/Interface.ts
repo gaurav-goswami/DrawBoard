@@ -45,7 +45,7 @@ export interface IElement {
   (
     id: number,
     generator: any,
-    x1: number,
+    x1: number | undefined,
     y1: number,
     x2: number | null,
     y2: number | null,
